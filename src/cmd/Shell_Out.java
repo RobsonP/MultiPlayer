@@ -17,8 +17,7 @@ import java.util.logging.Logger;
  *
  * @author RobsonP
  */
-public class Listen extends Thread{
-    //private StringBuffer lineout;
+public class Shell_Out extends Thread{
     private Vector v;
     /**
      * starts the Listener which is waiting for
@@ -27,6 +26,7 @@ public class Listen extends Thread{
      * @return void
      */
     
+    @Override
     public void run() {
         while (true) {
             if (Instance_hold.getLm().isTrylisten()) {    
@@ -53,7 +53,7 @@ public class Listen extends Thread{
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Listen.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Shell_Out.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 
@@ -75,7 +75,7 @@ public class Listen extends Thread{
             try {
                 Thread.sleep(100);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Listen.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Shell_Out.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (Instance_hold.getLm().isExit()) break;
         }        

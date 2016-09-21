@@ -15,10 +15,12 @@ import instance.Instance_data;
 import instance.Instance_hold;
 import java.awt.Color;
 import java.awt.Container;
+/*
 import java.awt.Dimension;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
+*/
 import java.io.File;
 import java.util.Timer;
 import java.util.logging.Level;
@@ -295,8 +297,7 @@ public class FS_Navi_Tab extends JDialog {
     }//GEN-LAST:event_jSlider_volMouseDragged
 
     private void jLabel_stopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseClicked
-        System.out.println("STOPPPP");
-        //Instance_hold.getVplay_mon().setStopped(true);
+        System.out.println("STOP");
         Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
         while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
             try {
@@ -334,7 +335,6 @@ public class FS_Navi_Tab extends JDialog {
         Instance_hold.getFsnt().setVisible(false);
         Instance_hold.getFsf().setVisible(false);
         Instance_data.setMedia_time(Instance_hold.getFsf().getEmpc().getMediaPlayer().getTime());
-        //Instance_hold.getVplay_mon().setStopped(true);
         Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
         Instance_hold.getPlayframe().setVisible(true);
         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().playMedia(Instance_data.getPlaypath());
@@ -347,7 +347,7 @@ public class FS_Navi_Tab extends JDialog {
 
             }
         };
-        //if (Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) Instance_hold.getVplay_mon().setStopped(false);
+        
         Instance_hold.getPlayframe().getjLabel_play().setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_pause_small.png")));
         Instance_hold.getMframe().getClistener().setFullscreen(false);
     }//GEN-LAST:event_jButton_fullscreenActionPerformed
@@ -365,13 +365,11 @@ public class FS_Navi_Tab extends JDialog {
 
                         }
                     };
-                    //Instance_hold.getVplay_mon().setStopped(false);
-                    //System.out.println("PLAY_BLUE_SMALL");
+
                     this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_pause_small.png")));
                     stop = false;
                 }
                 else {
-                    //Instance_hold.getVplay_mon().setStopped(true);
                     Instance_hold.getFsf().getEmpc().getMediaPlayer().pause();
                     while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
                         try {
@@ -405,7 +403,6 @@ public class FS_Navi_Tab extends JDialog {
         }else {
             this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_green_pause_small.png")));
         }
-
     }//GEN-LAST:event_jLabel_playMousePressed
 
     private void jLabel_timeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_timeMouseEntered
@@ -429,8 +426,7 @@ public class FS_Navi_Tab extends JDialog {
     }//GEN-LAST:event_jSlider_MediaMouseEntered
 
     private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
-        if (!dragged) Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));
-        
+        if (!dragged) Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));        
     }//GEN-LAST:event_jSlider_MediaMouseClicked
 
     private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
@@ -441,7 +437,6 @@ public class FS_Navi_Tab extends JDialog {
         System.out.println("PLAYCONTROL: " + this.playcontrol);
         if (this.playcontrol) {
             this.playcontrol = false;
-            //System.out.println("PLAYCONTROL: " + this.playcontrol);
 
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
             this.setEnabled(false);
@@ -458,7 +453,6 @@ public class FS_Navi_Tab extends JDialog {
             this.setEnabled(true);
             this.playcontrol = true;
         }
-
     }//GEN-LAST:event_jLabel_nextMouseClicked
 
     private void jLabel_nextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseEntered
@@ -481,7 +475,6 @@ public class FS_Navi_Tab extends JDialog {
         System.out.println("PLAYCONTROL: " + this.playcontrol);
         if (this.playcontrol) {
             this.playcontrol = false;
-            //System.out.println("PLAYCONTROL: " + this.playcontrol);
 
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
             this.setEnabled(false);
@@ -536,8 +529,6 @@ public class FS_Navi_Tab extends JDialog {
         this.stop = stop;
     }
 
-    
-  
     /**
      * @param args the command line arguments
      */

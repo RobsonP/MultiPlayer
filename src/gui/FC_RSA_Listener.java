@@ -22,7 +22,7 @@ public class FC_RSA_Listener implements ActionListener{
     public void actionPerformed(ActionEvent e) {  
         if (e.getActionCommand().equals("ApproveSelection")) {
             file = jfc.getSelectedFile();
-            Instance_hold.getSettDiag().getjTextField_RSA().setText(file.getPath());
+            Instance_hold.getSetframe().getjTextField_RSA().setText(file.getPath());
         }
     }
 
@@ -32,6 +32,5 @@ public class FC_RSA_Listener implements ActionListener{
 
     public void setJfc(JFileChooser jfc) {
         this.jfc = jfc;
-    }
-           
+    }      
 }

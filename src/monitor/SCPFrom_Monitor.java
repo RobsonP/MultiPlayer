@@ -13,7 +13,7 @@ import java.io.File;
 public class SCPFrom_Monitor {
     private int c, irruptflag;
     private File currentdl;
-    private boolean dlfinish, exit, rdytoplay, medreleased, newsession, closedlmonitor, monitorisclosed, plremove, init;
+    private boolean dlfinish, exit, rdytoplay, medreleased, newsession, closedlmonitor, monitorisclosed, plremove, init, closechannelflag;
     
     public SCPFrom_Monitor() {
         dlfinish = false;
@@ -27,6 +27,7 @@ public class SCPFrom_Monitor {
         init = false;
         irruptflag = 0;
         c = 1;
+        closechannelflag = false;
     }
 
     public synchronized File getCurrentdl() {
@@ -68,7 +69,7 @@ public class SCPFrom_Monitor {
     public synchronized void setExit(boolean exit) {
         this.exit = exit;
     }
-    
+ 
     public synchronized boolean isRdytoplay() {
         return rdytoplay;
     }
@@ -76,15 +77,7 @@ public class SCPFrom_Monitor {
     public synchronized void setRdytoplay(boolean rdytoplay) {
         this.rdytoplay = rdytoplay;
     }
-
-    public synchronized boolean isMedreleased() {
-        return medreleased;
-    }
-
-    public synchronized void setMedreleased(boolean medreleased) {
-        this.medreleased = medreleased;
-    }
-
+  
     public synchronized boolean isNewsession() {
         return newsession;
     }
@@ -120,5 +113,12 @@ public class SCPFrom_Monitor {
     public void setInit(boolean init) {
         this.init = init;
     }
-    
+
+    public boolean isClosechannelflag() {
+        return closechannelflag;
+    }
+
+    public void setClosechannelflag(boolean closechannelflag) {
+        this.closechannelflag = closechannelflag;
+    }  
 }

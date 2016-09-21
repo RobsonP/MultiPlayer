@@ -10,7 +10,6 @@
  */
 package gui;
 
-
 import control.Main_controls;
 import instance.Instance_data;
 import instance.Instance_hold;
@@ -20,7 +19,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import soSSH.Video_Play;
+import soSSH.Play;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 
 /**
@@ -85,8 +84,9 @@ public class PlayFrame extends javax.swing.JFrame {
         jLabel_play = new javax.swing.JLabel();
         jLabel_volume = new javax.swing.JLabel();
         jLabel_next = new javax.swing.JLabel();
-        jButton_fullscreen = new javax.swing.JButton();
         jLabel_medianame = new javax.swing.JLabel();
+        jToggleButton_lock = new javax.swing.JToggleButton();
+        jButton_fullscreen = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addMouseListener(new java.awt.event.MouseAdapter() {
@@ -99,11 +99,11 @@ public class PlayFrame extends javax.swing.JFrame {
         jPanel_View.setLayout(jPanel_ViewLayout);
         jPanel_ViewLayout.setHorizontalGroup(
             jPanel_ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
         jPanel_ViewLayout.setVerticalGroup(
             jPanel_ViewLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 231, Short.MAX_VALUE)
+            .addGap(0, 287, Short.MAX_VALUE)
         );
 
         jSlider_Media.setMaximum(1000);
@@ -130,9 +130,6 @@ public class PlayFrame extends javax.swing.JFrame {
 
         jLabel_prev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_prev_small.png"))); // NOI18N
         jLabel_prev.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_prevMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_prevMouseClicked(evt);
             }
@@ -145,15 +142,15 @@ public class PlayFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_prevMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_prevMouseReleased(evt);
+            }
         });
 
         jLabel_time.setText("0:00");
 
         jLabel_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_stop_small.png"))); // NOI18N
         jLabel_stop.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_stopMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_stopMouseClicked(evt);
             }
@@ -165,6 +162,9 @@ public class PlayFrame extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_stopMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_stopMouseReleased(evt);
             }
         });
 
@@ -188,9 +188,6 @@ public class PlayFrame extends javax.swing.JFrame {
 
         jLabel_next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_fwd_small.png"))); // NOI18N
         jLabel_next.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_nextMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_nextMouseClicked(evt);
             }
@@ -203,6 +200,18 @@ public class PlayFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_nextMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_nextMouseReleased(evt);
+            }
+        });
+
+        jLabel_medianame.setText(" ");
+
+        jToggleButton_lock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/playframe_toggle.png"))); // NOI18N
+        jToggleButton_lock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton_lockActionPerformed(evt);
+            }
         });
 
         jButton_fullscreen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/fs.png"))); // NOI18N
@@ -212,65 +221,55 @@ public class PlayFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel_medianame.setText(" ");
-
         javax.swing.GroupLayout jPanel_navLayout = new javax.swing.GroupLayout(jPanel_nav);
         jPanel_nav.setLayout(jPanel_navLayout);
         jPanel_navLayout.setHorizontalGroup(
             jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSlider_Media, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel_navLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addComponent(jLabel_medianame)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addComponent(jLabel_play)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_stop)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel_time)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
-                        .addComponent(jLabel_prev)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel_next)
-                        .addGap(67, 67, 67)
-                        .addComponent(jLabel_volume)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(21, 21, 21))))
+                .addGap(40, 40, 40)
+                .addComponent(jLabel_medianame)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel_navLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_play)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_stop)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_time)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_prev)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_next)
+                .addGap(39, 39, 39)
+                .addComponent(jToggleButton_lock, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel_volume)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
+                .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel_navLayout.setVerticalGroup(
             jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_navLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jSlider_Media, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
                 .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addGap(14, 14, 14)
                         .addComponent(jLabel_time))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel_volume))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_stop)
-                            .addComponent(jLabel_play)))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel_stop)
+                    .addComponent(jLabel_play)
+                    .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel_volume)
+                        .addComponent(jToggleButton_lock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel_medianame))
         );
 
@@ -278,7 +277,7 @@ public class PlayFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel_View, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -287,11 +286,11 @@ public class PlayFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel_View, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel_nav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel_nav, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -300,23 +299,21 @@ public class PlayFrame extends javax.swing.JFrame {
 
     
     
-    private void jSlider_MediaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseReleased
-        if (dragged) {
-            this.empc.getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(sl_value/1000.0)));
-            dragged = false;
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        /*
+        if (evt.getClickCount() >= 2) {
+            this.setVisible(false);
+            Instance_hold.getMframe().getjPanel_nav().setVisible(true);
+            Instance_hold.getMframe().getjLabel_play().setIcon(this.jLabel_play.getIcon());
+            Instance_hold.getMframe().getjLabel_stop().setIcon(this.jLabel_stop.getIcon());
+            Instance_hold.getMframe().getjLabel_prev().setIcon(this.jLabel_prev.getIcon());
+            Instance_hold.getMframe().getjLabel_next().setIcon(this.jLabel_next.getIcon());
+            Instance_hold.getMframe().setStop(this.stop);
         }
-    }//GEN-LAST:event_jSlider_MediaMouseReleased
-
-    private void jSlider_MediaMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseDragged
-        //System.out.println("SLVALUE: " + sl_value);
-        dragged = true;
-        sl_value = this.jSlider_Media.getValue();
-        //System.out.println(sl_value);
-    }//GEN-LAST:event_jSlider_MediaMouseDragged
+        */
+    }//GEN-LAST:event_formMouseClicked
 
     private void jButton_fullscreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_fullscreenActionPerformed
-        //Dimension screensize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        
         System.out.println(Instance_data.getPlaypath());
         File file = new File(Instance_data.getPlaypath());
         
@@ -342,7 +339,6 @@ public class PlayFrame extends javax.swing.JFrame {
         this.setVisible(false);
         vol = this.empc.getMediaPlayer().getVolume();
         Instance_data.setMedia_time(this.empc.getMediaPlayer().getTime());
-        //Instance_hold.getVplay_mon().setStopped(true);
         this.empc.getMediaPlayer().stop();
         Instance_hold.getFsf().setVisible(true);
         Instance_hold.getFsf().getEmpc().getMediaPlayer().playMedia(Instance_data.getPlaypath());
@@ -354,54 +350,135 @@ public class PlayFrame extends javax.swing.JFrame {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Video_Play.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
                 }
             };
             
         Instance_hold.getFsf().getjPanel_View().getComponent(0).setSize(Instance_hold.getFsf().getjPanel_View().getSize());
         Instance_hold.getFsf().getjPanel_View().repaint();    
-        Instance_hold.getFsnt().getjSlider_Media().setValue(this.jSlider_vol.getValue());
-        //Instance_hold.getFsnt().setVisible(true);
-        
+        Instance_hold.getFsnt().getjSlider_Media().setValue(this.jSlider_vol.getValue());        
         
         Instance_hold.getFsnt().getjLabel_play().setIcon(Instance_hold.getIm_hold().getMcb_grey_pause_small());
         
         if (Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
             Instance_hold.getFsnt().setStop(false);
-            //Instance_hold.getVplay_mon().setStopped(false);
         }
         
         System.out.println("Fullscreen");
     }//GEN-LAST:event_jButton_fullscreenActionPerformed
 
+    private void jSlider_MediaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseReleased
+        if (dragged) {
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(Instance_hold.getPlayframe().getSl_value()/1000.0)));
+            dragged = false;
+        }
+    }//GEN-LAST:event_jSlider_MediaMouseReleased
+
+    private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
+        if (!dragged) Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));
+    }//GEN-LAST:event_jSlider_MediaMouseClicked
+
+    private void jSlider_MediaMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseDragged
+        dragged = true;
+        Instance_hold.getPlayframe().setSl_value(this.jSlider_Media.getValue());
+    }//GEN-LAST:event_jSlider_MediaMouseDragged
+
     private void jSlider_volMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_volMouseDragged
-        vo_value = this.jSlider_vol.getValue();
-        this.empc.getMediaPlayer().setVolume(vo_value);
-        Instance_hold.getMframe().getjSlider_vol().setValue(vo_value);
-        Instance_hold.getFsnt().getjSlider_vol().setValue(vo_value);
+        Instance_hold.getPlayframe().setVo_value(this.jSlider_vol.getValue());
+        Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setVolume(Instance_hold.getPlayframe().getVo_value());
+        Instance_hold.getPlayframe().getjSlider_vol().setValue(Instance_hold.getPlayframe().getVo_value());
+        Instance_hold.getFsnt().getjSlider_vol().setValue(Instance_hold.getPlayframe().getVo_value());
     }//GEN-LAST:event_jSlider_volMouseDragged
+
+    private void jLabel_prevMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseClicked
+        System.out.println("PLAYCONTROL: " + this.playcontrol);
+        if (this.playcontrol) {
+            this.playcontrol = false;
+
+            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
+            this.setEnabled(false);
+            Main_controls.prevMedia();
+
+            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            this.setEnabled(true);
+            this.playcontrol = true;
+        }
+    }//GEN-LAST:event_jLabel_prevMouseClicked
+
+    private void jLabel_prevMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseEntered
+        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
+    }//GEN-LAST:event_jLabel_prevMouseEntered
+
+    private void jLabel_prevMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseExited
+        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_grey_prev_small());
+    }//GEN-LAST:event_jLabel_prevMouseExited
+
+    private void jLabel_prevMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMousePressed
+        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_green_prev_small());
+    }//GEN-LAST:event_jLabel_prevMousePressed
+
+    private void jLabel_prevMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseReleased
+        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
+    }//GEN-LAST:event_jLabel_prevMouseReleased
+
+    private void jLabel_stopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseClicked
+        Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+        while(Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PlayFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
+        this.jSlider_Media.setValue(0);
+        stop = true;
+    }//GEN-LAST:event_jLabel_stopMouseClicked
+
+    private void jLabel_stopMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseEntered
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
+    }//GEN-LAST:event_jLabel_stopMouseEntered
+
+    private void jLabel_stopMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseExited
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_grey_stop_small());
+    }//GEN-LAST:event_jLabel_stopMouseExited
+
+    private void jLabel_stopMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMousePressed
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_green_stop_small());
+    }//GEN-LAST:event_jLabel_stopMousePressed
+
+    private void jLabel_stopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseReleased
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
+    }//GEN-LAST:event_jLabel_stopMouseReleased
 
     private void jLabel_playMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseClicked
         if (this.playcontrol) {
             this.setEnabled(false);
-            if (!this.empc.getMediaPlayer().isPlaying()) {
-                this.empc.getMediaPlayer().start();
-                while(!this.getEmpc().getMediaPlayer().isPlaying()) {
+            if (!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
+                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().start();
+                while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
                     //System.out.println("WAITING TO START PLAYING:::::");
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
 
                     }
-                };
-                //Instance_hold.getVplay_mon().setStopped(false);
+                }
+
                 this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_pause_small());
                 stop = false;
             }
             else {
-                //Instance_hold.getVplay_mon().setStopped(true);
-                this.empc.getMediaPlayer().pause();
-                while(this.empc.getMediaPlayer().isPlaying()) {
+                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().pause();
+                while(Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
@@ -415,103 +492,6 @@ public class PlayFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jLabel_playMouseClicked
 
-    private void jLabel_playMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMousePressed
-        if (stop) {
-            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_play_small());
-        }else {            
-            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_pause_small());
-        }
-        
-    }//GEN-LAST:event_jLabel_playMousePressed
-
-    private void jLabel_prevMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseReleased
-        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
-    }//GEN-LAST:event_jLabel_prevMouseReleased
-
-    private void jLabel_prevMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseClicked
-        System.out.println("PLAYCONTROL: " + this.playcontrol);
-        if (this.playcontrol) {
-            this.playcontrol = false;
-            //System.out.println("PLAYCONTROL: " + this.playcontrol);
-
-            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
-            this.setEnabled(false);            
-            Main_controls.prevMedia();
-
-            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-                
-            this.setEnabled(true);
-            this.playcontrol = true;
-        }
-
-    }//GEN-LAST:event_jLabel_prevMouseClicked
-
-    private void jLabel_prevMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMousePressed
-        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_green_prev_small());
-    }//GEN-LAST:event_jLabel_prevMousePressed
-
-    private void jLabel_nextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseClicked
-            System.out.println("PLAYCONTROL: " + this.playcontrol);
-        if (this.playcontrol) {
-            this.playcontrol = false;
-            //System.out.println("PLAYCONTROL: " + this.playcontrol);
-
-            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
-            this.setEnabled(false);            
-            Main_controls.nextMedia();
-
-            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-                
-            this.setEnabled(true);
-            this.playcontrol = true;
-        }
-        
-             
-    }//GEN-LAST:event_jLabel_nextMouseClicked
-
-    private void jLabel_nextMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMousePressed
-        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_green_fwd_small());
-    }//GEN-LAST:event_jLabel_nextMousePressed
-
-    private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
-        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
-    }//GEN-LAST:event_jLabel_nextMouseReleased
-
-    private void jLabel_stopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseClicked
-        //Instance_hold.getVplay_mon().setStopped(true);
-        this.empc.getMediaPlayer().stop();
-        while(this.empc.getMediaPlayer().isPlaying()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(PlayFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
-        this.jSlider_Media.setValue(0);
-        stop = true;
-    }//GEN-LAST:event_jLabel_stopMouseClicked
-
-    private void jLabel_stopMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMousePressed
-        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_green_stop_small());
-    }//GEN-LAST:event_jLabel_stopMousePressed
-
-    private void jLabel_stopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseReleased
-        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
-    }//GEN-LAST:event_jLabel_stopMouseReleased
-
     private void jLabel_playMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseEntered
         if (stop) this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_play_small());
         else this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_pause_small());
@@ -522,21 +502,36 @@ public class PlayFrame extends javax.swing.JFrame {
         else this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_pause_small());
     }//GEN-LAST:event_jLabel_playMouseExited
 
-    private void jLabel_stopMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseEntered
-        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
-    }//GEN-LAST:event_jLabel_stopMouseEntered
+    private void jLabel_playMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMousePressed
+        if (stop) {
+            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_play_small());
+        }else {
+            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_pause_small());
+        }
+    }//GEN-LAST:event_jLabel_playMousePressed
 
-    private void jLabel_stopMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseExited
-        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_grey_stop_small());
-    }//GEN-LAST:event_jLabel_stopMouseExited
+    private void jLabel_nextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseClicked
+        System.out.println("PLAYCONTROL: " + this.playcontrol);
+        if (this.playcontrol) {
+            this.playcontrol = false;
+            //System.out.println("PLAYCONTROL: " + this.playcontrol);
 
-    private void jLabel_prevMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseEntered
-        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
-    }//GEN-LAST:event_jLabel_prevMouseEntered
+            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
+            this.setEnabled(false);
+            Main_controls.nextMedia();
 
-    private void jLabel_prevMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseExited
-        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_grey_prev_small());
-    }//GEN-LAST:event_jLabel_prevMouseExited
+            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            this.setEnabled(true);
+            this.playcontrol = true;
+        }
+    }//GEN-LAST:event_jLabel_nextMouseClicked
 
     private void jLabel_nextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseEntered
         this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
@@ -546,21 +541,24 @@ public class PlayFrame extends javax.swing.JFrame {
         this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_grey_fwd_small());
     }//GEN-LAST:event_jLabel_nextMouseExited
 
-    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
-        if (evt.getClickCount() >= 2) {
-            this.setVisible(false);
-            Instance_hold.getMframe().getjPanel_nav().setVisible(true);
-            Instance_hold.getMframe().getjLabel_play().setIcon(this.jLabel_play.getIcon());
-            Instance_hold.getMframe().getjLabel_stop().setIcon(this.jLabel_stop.getIcon());
-            Instance_hold.getMframe().getjLabel_prev().setIcon(this.jLabel_prev.getIcon());
-            Instance_hold.getMframe().getjLabel_next().setIcon(this.jLabel_next.getIcon());
-            Instance_hold.getMframe().setStop(this.stop);
-        }
-    }//GEN-LAST:event_formMouseClicked
+    private void jLabel_nextMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMousePressed
+        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_green_fwd_small());
+    }//GEN-LAST:event_jLabel_nextMousePressed
 
-    private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
-        if (!dragged) this.getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));
-    }//GEN-LAST:event_jSlider_MediaMouseClicked
+    private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
+        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
+    }//GEN-LAST:event_jLabel_nextMouseReleased
+
+    private void jToggleButton_lockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton_lockActionPerformed
+        this.setVisible(false);
+        Instance_hold.getMframe().getjPanel_nav().setVisible(true);
+        Instance_hold.getMframe().getjLabel_play().setIcon(this.jLabel_play.getIcon());
+        Instance_hold.getMframe().getjLabel_stop().setIcon(this.jLabel_stop.getIcon());
+        Instance_hold.getMframe().getjLabel_prev().setIcon(this.jLabel_prev.getIcon());
+        Instance_hold.getMframe().getjLabel_next().setIcon(this.jLabel_next.getIcon());
+        Instance_hold.getMframe().setStop(this.stop);
+        Instance_hold.getMframe().getjToggleButton_lock().setSelected(true);
+    }//GEN-LAST:event_jToggleButton_lockActionPerformed
 
     public EmbeddedMediaPlayerComponent getEmpc() {
         return empc;
@@ -577,9 +575,7 @@ public class PlayFrame extends javax.swing.JFrame {
     public void setjSlider_vol(JSlider jSlider_vol) {
         this.jSlider_vol = jSlider_vol;
     }
-    
-    
-    
+
     public void init() {
         if (init == false) {
 
@@ -691,6 +687,10 @@ public class PlayFrame extends javax.swing.JFrame {
      * @param args the command line arguments
      */
 
+    public JToggleButton getjToggleButton_lock() {
+        return jToggleButton_lock;
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_fullscreen;
     private javax.swing.JLabel jLabel_medianame;
@@ -704,5 +704,6 @@ public class PlayFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel_nav;
     private javax.swing.JSlider jSlider_Media;
     private javax.swing.JSlider jSlider_vol;
+    private javax.swing.JToggleButton jToggleButton_lock;
     // End of variables declaration//GEN-END:variables
 }

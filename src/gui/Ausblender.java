@@ -14,8 +14,7 @@ class Ausblender extends TimerTask {
     int ypos;
 
     @Override
-    public void run()
-    {
+    public void run() {
         FS_Navi_Tab_Scroll_Down fsntsd = new FS_Navi_Tab_Scroll_Down();
         fsntsd.start();
     }

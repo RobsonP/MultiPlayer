@@ -15,8 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -26,6 +24,7 @@ import javax.swing.JOptionPane;
  */
 public class FC_load_Listener implements ActionListener{
     private JFileChooser jfc;
+    private SettingsDiag setdiag;
     private File file;
     private FileReader fr;
     private BufferedReader bufread;
@@ -36,7 +35,7 @@ public class FC_load_Listener implements ActionListener{
         boolean crdir = false;
         
         if (e.getActionCommand().equals("ApproveSelection")) {
-        ArrayList<String> strlist = new ArrayList<>();
+            ArrayList<String> strlist = new ArrayList<>();
             try {
                 file = jfc.getSelectedFile();
                 
@@ -75,25 +74,27 @@ public class FC_load_Listener implements ActionListener{
                 switch (n) {
                     case 0: Main_controls.del(file);
                         
-                    crdir = file.mkdirs();
-                    if (!crdir) {
-                        JOptionPane.showMessageDialog(null, "Directory is busy", null, JOptionPane.ERROR_MESSAGE);
-                        throw new IOException();
-                    }
-                    
-                    Instance_hold.getMframe().getjButton_connect().setEnabled(true);
-                    JOptionPane.showMessageDialog(null, "Settings loaded");break;
+                            crdir = file.mkdirs();
+                            if (!crdir) {
+                                JOptionPane.showMessageDialog(null, "Directory is busy", null, JOptionPane.ERROR_MESSAGE);
+                                throw new IOException();
+                            }
+
+                            this.setdiag.setVisible(false);
+                            Instance_hold.getMframe().getjButton_connect().setEnabled(true);
+                            JOptionPane.showMessageDialog(null, "Settings loaded");break;
                     case 1: break;
                     default: ;
                 }    
-                             
+
                 System.out.println("PATH: " + Instance_data.getRsakeyPath());
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Error while loading settings", "Inane error", JOptionPane.ERROR_MESSAGE);
                 //Logger.getLogger(FC_sav_Listener.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-      
+        }else if (e.getActionCommand().equals("CancelSelection")) {
+            System.out.println("Test");
+        }  
     }
 
     public JFileChooser getJfc() {
@@ -103,4 +104,12 @@ public class FC_load_Listener implements ActionListener{
     public void setJfc(JFileChooser jfc) {
         this.jfc = jfc;
     }
+
+    public SettingsDiag getSetdiag() {
+        return setdiag;
+    }
+
+    public void setSetdiag(SettingsDiag setdiag) {
+        this.setdiag = setdiag;
+    }  
 }

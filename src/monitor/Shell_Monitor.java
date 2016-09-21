@@ -4,7 +4,7 @@ package monitor;
  * @author RobsonP
  */
 public class Shell_Monitor {
-    private boolean loading, exit, connecterror, startshell, rdytolisten, write_output;
+    private boolean loading, exit, connecterror, startshell, rdytolisten, write_output, cancel;
     
     public Shell_Monitor() {
         loading = false;
@@ -13,77 +13,37 @@ public class Shell_Monitor {
         startshell = false;
         rdytolisten = false;
         write_output = false;
+        cancel = false;
     }
 
-    /**
-     * returns the exit-bit
-     * @return boolean
-     */
-    
     public synchronized boolean isExit() {
         return exit;
     }
 
-    /**
-     * sets the exit-flag
-     * @param exit 
-     */
-    
     public synchronized void setExit(boolean exit) {
         this.exit = exit;
     }
-
-    /**
-     * returns the loading-flag
-     * @return boolean
-     */
-    
+ 
     public synchronized boolean isLoading() {
         return loading;
     }
-
-    /**
-     * sets the loading-flag
-     * @param loading 
-     */
-    
+   
     public synchronized void setLoading(boolean loading) {
         this.loading = loading;
     }
-        
-    /**
-     * returns the connect-flag
-     * @return 
-     */
-    
+   
     public synchronized boolean isConnectError() {
         return connecterror;
     }
-
-    /**
-     * sets the connect-flag
-     * @param connecterror 
-     */
-    
+   
     public synchronized void setConnectError(boolean connecterror) {
         this.connecterror = connecterror;
     }
-    
-    
-    /**
-     * returns the startshell-flag
-     * @return boolean
-     */
-    
+   
     public synchronized boolean isStartshell() {
         return startshell;
     }
-
-    /**
-     * sets the startshell-flag
-     * @param startshell 
-     */
-    
+   
     public synchronized void setStartshell(boolean startshell) {
         this.startshell = startshell;
     }
@@ -103,6 +63,13 @@ public class Shell_Monitor {
     public void setWrite_output(boolean write_output) {
         this.write_output = write_output;
     }
-  
+
+    public boolean isCancel() {
+        return cancel;
+    }
     
+
+    public void setCancel(boolean cancel) {
+        this.cancel = cancel;
+    }   
 }

@@ -46,6 +46,4 @@ public class MessageThread extends Thread {
     public void setMtype(int mtype) {
         this.mtype = mtype;
     }
-
 }
-

@@ -200,11 +200,5 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
 
     public void setTrchange(boolean trchange) {
         this.trchange = trchange;
-    }
-
-    
-
-    
-    
-    
+    }  
 }

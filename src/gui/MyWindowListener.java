@@ -62,6 +62,5 @@ public class MyWindowListener implements WindowListener{
 
     public void setPlcheck(boolean plcheck) {
         this.plcheck = plcheck;
-    }
-    
+    }   
 }

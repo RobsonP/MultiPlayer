@@ -50,6 +50,7 @@ public class PasswordDiag extends JDialog {
         jButton_cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
 
         jLabel_passphrase.setText("Passphrase");
 
@@ -117,6 +118,8 @@ public class PasswordDiag extends JDialog {
     private void jButton_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_cancelActionPerformed
         Instance_hold.getMframe().toFront();
         Instance_hold.getSh().setPasswordcheck(false);
+        
+        Instance_hold.getSh_mon().setCancel(true);
         
         DownThread dt = new DownThread();
         dt.start();

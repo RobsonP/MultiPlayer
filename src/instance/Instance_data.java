@@ -26,6 +26,7 @@ public class Instance_data {
     private static String rsakeyPath;
     private static String rsakeypw;
     private static String cmd;
+    private static String ls;
     private static String tmpPath;
     private static String[] cpystr;
     private static int port;
@@ -44,6 +45,7 @@ public class Instance_data {
     private static Session session;
     private static JSch jsch;
     private static UserInfo ui;
+    
 
     public synchronized static String getPw() {
         return pw;
@@ -192,7 +194,7 @@ public class Instance_data {
     public synchronized static void decrementExitedthreads() {
         Instance_data.exitedthreads--;
     }
-/*
+
     public synchronized static ArrayList<Node_entry> getAllnodes() {
         return allnodes;
     }
@@ -200,7 +202,7 @@ public class Instance_data {
     public synchronized static void setAllnodes(ArrayList<Node_entry> allnodes) {
         Instance_data.allnodes = allnodes;
     }
-*/
+
     public synchronized static ChannelSftp getChannel() {
         return channel;
     }
@@ -216,12 +218,7 @@ public class Instance_data {
     public synchronized static void setBaos(ByteArrayOutputStream baos) {
         Instance_data.baos = baos;
     }
- /*   
-    public synchronized static void create_new_Nodelist() {
-        allnodes.clear();
-        //allnodes = new ArrayList<>();
-    }
-*/
+
     public synchronized static String getHostnm() {
         return hostnm;
     }
@@ -254,5 +251,11 @@ public class Instance_data {
         Instance_data.ui = ui;
     }
 
-    
+    public static String getLs() {
+        return ls;
+    }
+
+    public static void setLs(String ls) {
+        Instance_data.ls = ls;
+    } 
 }

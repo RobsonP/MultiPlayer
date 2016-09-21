@@ -55,8 +55,5 @@ public class Node_entry implements Comparable<Node_entry>{
     @Override
     public int compareTo(Node_entry ne) {
         return this.name.compareTo(ne.getName());
-    }
-
-    
-    
+    }   
 }

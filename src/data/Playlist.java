@@ -24,7 +24,5 @@ public class Playlist {
 
     public ArrayList<String> getEntries() {
         return entries;
-    }
-    
-    
+    }   
 }

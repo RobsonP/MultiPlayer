@@ -18,14 +18,12 @@ public class Comparator {
         try {
             for (int i=0;i<nodelist.size();i++) {
                 int j = i+1;
-                //System.out.println("next");
+
                 do {
                     if (compareTo(nodelist.get(i),nodelist.get(j)) == 1) {
                         Node_entry ne = nodelist.get(i);
                         nodelist.set(i, nodelist.get(j));
                         nodelist.set(j, ne);
-                        
-                        //System.out.println("CHANGED");
                         
                         j = i;
                     }
@@ -34,17 +32,13 @@ public class Comparator {
                 }while (j<nodelist.size());
             }
         }catch(Exception exc) {
-            //exc.printStackTrace();
-            //System.out.println("EXCEPTION SORT");
+            System.out.println("EXCEPTION SORT");
         }
         
         return nodelist;
     }
     
     private static int compareTo(Node_entry o1, Node_entry o2) {
-        //System.out.println("Type o1: " + o1.getType());
-        //System.out.println("Type o2: " + o2.getType());
-        
         if (o1.getType() == 'd' && o2.getType() == 'f') {/*System.out.println("DIRVSFILE");*/return -1;}
         if (o1.getType() == 'f' && o2.getType() == 'd') {/*System.out.println("FILEVSDIR");*/return 1;}
         

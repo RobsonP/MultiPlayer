@@ -8,6 +8,7 @@ import instance.Instance_data;
 import instance.Instance_hold;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -24,8 +25,6 @@ public class SettingsDiag extends JDialog {
      * Creates new form SettingsFrame
      */
     public SettingsDiag() {
-        
-        
         initComponents();
          
         this.setTitle("Settings");
@@ -36,8 +35,6 @@ public class SettingsDiag extends JDialog {
         TitledBorder title;
         title = BorderFactory.createTitledBorder("Optional");
         this.jPanel_optional.setBorder(title);
-        
-        //this.setSize((int)this.getSize().getWidth()+30, (int)this.getSize().getHeight()+30);
     }
 
     /**
@@ -280,7 +277,7 @@ public class SettingsDiag extends JDialog {
         Instance_data.setTmpPath(this.jTextField_tmp.getText());
         Instance_hold.getMframe().getjTextField_Server().setText(this.jTextField_server.getText());
         
-        if (Instance_hold.getMframe().getjTextField_Port().getText().equals("")) {
+        if (this.jTextField_port.getText().equals("")) {
             Instance_hold.getMframe().getjTextField_Port().setText("22");
         } else {
             Instance_hold.getMframe().getjTextField_Port().setText(this.jTextField_port.getText());
@@ -296,9 +293,9 @@ public class SettingsDiag extends JDialog {
         fc.setVisible(true);
         FC_load_Listener listener = new FC_load_Listener();
         listener.setJfc(fc);
+        listener.setSetdiag(this);
         fc.addActionListener(listener);
         fc.showOpenDialog(this);
-        this.setVisible(false);
     }//GEN-LAST:event_jButton_importActionPerformed
 
     public JTextField getjTextField_RSA() {
@@ -344,7 +341,10 @@ public class SettingsDiag extends JDialog {
     /**
      * @param args the command line arguments
      */
-    
+
+    public JButton getjButton_import() {
+        return jButton_import;
+    } 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_browse_keyfile;
     private javax.swing.JButton jButton_browse_tmp;

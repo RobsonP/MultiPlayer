@@ -92,6 +92,4 @@ public class Image_hold {
     public ImageIcon getMcb_green_fwd_small() {
         return mcb_green_fwd_small;
     }
-    
-    
 }

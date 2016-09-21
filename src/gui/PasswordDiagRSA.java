@@ -5,16 +5,20 @@
 package gui;
 
 import cmd.DownThread;
-import cmd.Shell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import control.Main_controls;
+import data.Playlist;
 import instance.Instance_data;
 import instance.Instance_hold;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JRootPane;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -59,6 +63,7 @@ public class PasswordDiagRSA extends JDialog {
         jButton_cancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
 
         jLabel_passphrase.setText("Passphrase for Key");
 
@@ -110,12 +115,11 @@ public class PasswordDiagRSA extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_cancelActionPerformed
-        Instance_hold.getMframe().toFront();
-        Instance_hold.getSh().setPasswordcheck(false);
+        Instance_hold.getSh_mon().setCancel(true);
         
         DownThread dt = new DownThread();
         dt.start();
-        
+ 
         this.dispose();
     }//GEN-LAST:event_jButton_cancelActionPerformed
 

@@ -39,7 +39,7 @@ public class Shell extends Thread{
         Instance_data.decrementExitedthreads();
         
         while (!Instance_hold.getSh_mon().isExit() && passwordcheck) {
-            if (Instance_hold.getSh_mon().isStartshell() && !Instance_hold.getSh_mon().isConnectError()) {
+            if (Instance_hold.getSh_mon().isStartshell() && !Instance_hold.getSh_mon().isConnectError()  && !Instance_hold.getSh_mon().isCancel()) {
                 if (!Instance_data.getHost().startsWith("@"))
                     connect(Instance_data.getHost(), Instance_data.getPort(), Instance_data.getRsakeyPath());
                 else {
@@ -60,15 +60,13 @@ public class Shell extends Thread{
         Instance_hold.getSh_mon().setStartshell(false);
         Instance_hold.getSh_mon().setWrite_output(false);
         
-        if (!passwordcheck) Instance_hold.getSh_mon().setConnectError(true);
-        
+        if (!passwordcheck) Instance_hold.getSh_mon().setConnectError(true);  
     }
     
     
     @SuppressWarnings("empty-statement")
     
-  public void connect(String host, int port, String rsakeyPath){
-      
+  public void connect(String host, int port, String rsakeyPath) {
       System.out.println("RSAKEYP: " + rsakeyPath);
         try {
             File rsakey = new File(rsakeyPath);
@@ -119,81 +117,85 @@ public class Shell extends Thread{
             while(Instance_hold.getPframe().isVisible()) Thread.sleep(100);          
         }
 
-        if (passwordcheck) {
-            System.out.println("Passwordcheck: " + passwordcheck);
-            UserInfo ui = new MyUserInfo(Instance_data.getPw()) {
-            
-            @Override
-            public void showMessage(String message) {
-                JOptionPane.showMessageDialog(null, message);
-            }
-            
-            @Override
-            public boolean promptYesNo(String message) {
-                Object[] options={ "yes", "no" };
-                int foo=JOptionPane.showOptionDialog(null,
-                                                     message,
-                                                     "Warning",
-                                                     JOptionPane.DEFAULT_OPTION,
-                                                     JOptionPane.WARNING_MESSAGE,
-                                                     null, options, options[0]);
-                return foo==0;
-            }
+        if (!Instance_hold.getSh_mon().isCancel()) {
+            if (passwordcheck) {
+                System.out.println("Passwordcheck: " + passwordcheck);
+                UserInfo ui = new MyUserInfo(Instance_data.getPw()) {
+
+                @Override
+                public void showMessage(String message) {
+                    JOptionPane.showMessageDialog(null, message);
+                }
+
+                @Override
+                public boolean promptYesNo(String message) {
+                    Object[] options={ "yes", "no" };
+                    int foo=JOptionPane.showOptionDialog(null,
+                                                         message,
+                                                         "Warning",
+                                                         JOptionPane.DEFAULT_OPTION,
+                                                         JOptionPane.WARNING_MESSAGE,
+                                                         null, options, options[0]);
+                    return foo==0;
+                }
 
 
-            // If password is not given before the invocation of Session#connect(),
-            // implement also following methods,
-            // * UserInfo#getPassword(),
-            // * UserInfo#promptPassword(String message) and
-            // * UIKeyboardInteractive#promptKeyboardInteractive()
+                // If password is not given before the invocation of Session#connect(),
+                // implement also following methods,
+                // * UserInfo#getPassword(),
+                // * UserInfo#promptPassword(String message) and
+                // * UIKeyboardInteractive#promptKeyboardInteractive()
 
-            };
-            
-            Instance_data.setUi(ui);
-            Instance_hold.getSh_mon().setRdytolisten(true);
-            Instance_hold.getLm().setError(false);
-            
-            if (!Instance_hold.getListen().isAlive()){
-                Instance_hold.setListen(new Listen());
-                Instance_hold.getListen().start();
-            }
-        
-            do {
-                if (Instance_hold.getSh_mon().isWrite_output()) {
-                    if (!session.isConnected()) {
-                        session = jsch.getSession(usernm, hostnm, port);
-                        session.setUserInfo(ui);
-                        session.connect(1000);
-                    }
+                };
 
-                    channel = (ChannelSftp)session.openChannel("sftp");
+                Instance_data.setUi(ui);
+                Instance_hold.getSh_mon().setRdytolisten(true);
+                Instance_hold.getLm().setError(false);
+
+                if (!Instance_hold.getListen().isAlive()){
+                    Instance_hold.setListen(new Shell_Out());
+                    Instance_hold.getListen().start();
+                }
+
+                if (!Instance_hold.getSh_mon().isCancel()) {
+                    do {
+                        if (Instance_hold.getSh_mon().isWrite_output()) {
+                            if (!session.isConnected()) {
+                                session = jsch.getSession(usernm, hostnm, port);
+                                session.setUserInfo(ui);
+                                session.connect(1000);
+                            }
+
+                            channel = (ChannelSftp)session.openChannel("sftp");
 
 
-                    while (!session.isConnected()) {
+                            while (!session.isConnected()) {
+                                System.out.println("Waiting for Session Connect...");
+                                Thread.sleep(100);
+                            }
+
+                            pushcommand();
+                            Instance_hold.getSh_mon().setWrite_output(false);
+                            channel.disconnect();
+                        }
+
+                        if (Instance_hold.getSh_mon().isLoading()) {
+                            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(false);
+                            Instance_hold.getSh_mon().setLoading(false);
+                        }
+
+                        if (Instance_hold.getSh_mon().isExit()) {
+                            break;
+                        }
+
                         Thread.sleep(100);
-                    }
-
-                    pushcommand();
-                    Instance_hold.getSh_mon().setWrite_output(false);
-                    channel.disconnect();
+                    }while(true);
                 }
-
-                if (Instance_hold.getSh_mon().isLoading()) {
-                    Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(false);
-                    Instance_hold.getSh_mon().setLoading(false);
-                }
-                
-                if (Instance_hold.getSh_mon().isExit()) {
-                    break;
-                }
-
-                Thread.sleep(100);
-            }while(true);
+            }
             
             Instance_data.incrementExitedthreads();
         } 
-    }
-    catch(JSchException | IOException | InterruptedException e){
+    } catch(JSchException | IOException | InterruptedException e){
         System.out.println("Shell Exception");
         System.out.println(e.toString());
         try {
@@ -210,24 +212,26 @@ public class Shell extends Thread{
         }
         
         Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(false);
-
+        
         System.out.println("DOWN THREAD STARTED");
-        if (Instance_hold.getCthread().isAlive()) {
-            Instance_hold.getSh_mon().setConnectError(true);
+        
+        Instance_hold.getSh_mon().setConnectError(true);
 
-            while (Instance_hold.getCthread().isAlive()) {
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    java.util.logging.Logger.getLogger(Shell.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        while (Instance_hold.getCthread().isAlive()) {
+            System.out.println("WAITING FOR CThread EXIT");
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                java.util.logging.Logger.getLogger(Shell.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+            
+        Instance_hold.getSh_mon().setConnectError(false);
 
+        passwordcheck = false;
+        
         DownThread dt = new DownThread();
         dt.start();
-        
     }
     
     System.out.println(this);
@@ -278,10 +282,8 @@ public class Shell extends Thread{
         return channel;
     }
 
+    
     public void setChannel(ChannelSftp channel) {
         this.channel = channel;
     }
-  
-  
-  
 }

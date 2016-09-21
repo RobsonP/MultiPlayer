@@ -5,7 +5,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import control.Conversion;
-//import com.jcraft.jsch.*;
+import control.Main_controls;
 import data.MyUserInfo;
 import gui.MessageThread;
 import instance.Instance_data;
@@ -15,10 +15,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Vector;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class SCPFrom extends Thread{ 
+public class SCP extends Thread{ 
     private File f;
-    private MySystemOutProgressMonitor monitor;
+    private SCP_OutProgressMonitor monitor;
     private String filename, flnm;
     private String[] args;
     private FileOutputStream fos;
@@ -39,7 +40,7 @@ public class SCPFrom extends Thread{
      * @return void
      */
     
-    public SCPFrom() {
+    public SCP() {
         args = new String[2];
         old_pl_length = -1;
         anzgel = 0;
@@ -56,11 +57,7 @@ public class SCPFrom extends Thread{
             filename = Instance_hold.getPl().getEntries().get(i).split("/")[Instance_hold.getPl().getEntries().get(i).split("/").length-1];
             flnm = filename.replace("\\", "");
             f = new File(Instance_data.getTmpPath() + "\\" + flnm);
-/*
-            if (Instance_hold.getSCPFrom_Monitor().isInterrupted()) {
-                throw new Exception();
-            }
-*/
+
             hasdownloaded = false;
 
             if (f.exists()) {
@@ -84,8 +81,8 @@ public class SCPFrom extends Thread{
             System.out.println("ARGS: " + args[1]);
 
             if(Instance_data.getCpystr().length!=2){
-              System.err.println("usage: java ScpFrom user@remotehost:file1 file2");
-              throw new Exception();
+                System.err.println("usage: java ScpFrom user@remotehost:file1 file2");
+                throw new Exception();
             }
 
             Instance_hold.getSCPFrom_Monitor().setCurrentdl(f);
@@ -104,7 +101,7 @@ public class SCPFrom extends Thread{
             configuration.put("StrictHostKeyChecking", "no");
             
             session=jsch.getSession(user, host, Instance_data.getPort());
-
+            
             if (!Instance_data.getRsakeyPath().equals("")) {
                 byte[] privatek = Conversion.getkeyfromFile(Instance_data.getRsakeyPath());
                 byte[] publick = Conversion.getkeyfromFile(Instance_data.getRsakeyPath() + ".pub");
@@ -118,13 +115,13 @@ public class SCPFrom extends Thread{
 
             UserInfo ui;
             ui = new MyUserInfo(Instance_data.getPw());
-            
-            //session.setPassword(Instance_data.getPw());
+
             session.setUserInfo(ui);
             session.setConfig(configuration);
             session.connect();
 
             channel = (ChannelSftp) session.openChannel("sftp");
+            Instance_data.setChannel(channel);
 
             channel.connect();            
 
@@ -132,11 +129,11 @@ public class SCPFrom extends Thread{
             StringBuffer dir = new StringBuffer("");
               
             for (int j=0;j<splittedrfile.length-1;j++) {
-                 dir = dir.append(splittedrfile[j]).append("/");
+                dir = dir.append(splittedrfile[j]).append("/");
             }
 
             try {
-              channel.cd(dir.toString());
+                channel.cd(dir.toString());
             }catch (Exception exc) {
                 System.out.println("SCPFrom: Exception");
             }
@@ -155,53 +152,51 @@ public class SCPFrom extends Thread{
             
             if(cmds.size()==3)p2=(String)cmds.elementAt(2);
             try{
-                monitor = new MySystemOutProgressMonitor();
+                monitor = new SCP_OutProgressMonitor();
 
                 if(cmd.startsWith("get")){
                     int mode=ChannelSftp.OVERWRITE;
-                                    switch (cmd) {
-                                        case "get-resume":
-                                            mode=ChannelSftp.RESUME;
-                                            break;
-                                        case "get-append":
-                                            mode=ChannelSftp.APPEND;
-                                            break;
-                                    }
+                    switch (cmd) {
+                        case "get-resume":
+                            mode=ChannelSftp.RESUME;
+                            break;
+                        case "get-append":
+                            mode=ChannelSftp.APPEND;
+                            break;
+                    }
+                    
                     channel.get(p1, p2, monitor, mode);
-                }
-                else{
-                    int mode=ChannelSftp.OVERWRITE;
-                                     switch (cmd) {
-                                         case "put-resume":
-                                             mode=ChannelSftp.RESUME;
-                                             break;
-                                         case "put-append":
-                                             mode=ChannelSftp.APPEND;
-                                             break;
-                                     }
-                  channel.put(p1, p2, monitor, mode);
                 }
             }catch(Exception e) {
                 System.out.println("SCPFrom: Exception");
                 e.printStackTrace();
                 
-                //System.out.println("TEST: " + e.toString());
-                /*
+                Instance_hold.setMthread(new MessageThread("Network Error", MessageThread.TYPE_ERROR));
+                Instance_hold.getMthread().start();
+                
                 DownThread dt = new DownThread();
                 dt.start();
-                */
+                
+                break;
             }
             
-            if (Instance_hold.getSCPFrom_Monitor().isInterrupted()) throw new Exception();
+            System.out.println("SCP after get");
+            
+            if (Instance_hold.getSCPFrom_Monitor().isInterrupted()) {
+                System.out.println("SCP is interrupted");
+                
+                throw new Exception();
+            }
             
             session.disconnect();
+            
         }
 
             i++;
         }catch(Exception e) {            
-          System.out.println("SCP: EXCEPTION");
-          System.out.println(e.toString());
-          if (!e.toString().equals("java.lang.Exception") && !e.getMessage().equals("verify: false")) {
+            System.out.println("SCP: EXCEPTION");
+            System.out.println(e.toString());
+            if (!e.toString().equals("java.lang.Exception") && !e.getMessage().equals("verify: false")) {
                 System.out.println("PULLING DOWN");
 
                 try {
@@ -227,53 +222,56 @@ public class SCPFrom extends Thread{
                 dt.start();
 
                 break;
-          }
-          
-          System.out.println("I AM INTERRUPTED!!!");
-          try{if(fos!=null)fos.close();}catch(Exception ee){}
-          
-          Instance_hold.getSCPFrom_Monitor().setClosedlmonitor(true);
-          
-          if (Instance_hold.getSCPFrom_Monitor().isExit() || Instance_hold.getSCPFrom_Monitor().isNewsession() || Instance_hold.getSCPFrom_Monitor().isPlremove()) {
-              while (!Instance_hold.getSCPFrom_Monitor().isMedreleased()) {
-                        if (!Instance_hold.getVplay().isAlive()) Instance_hold.getSCPFrom_Monitor().setMedreleased(true);
-                        System.out.println("WAITING FOR MEDIA RELEASE");
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            java.util.logging.Logger.getLogger(SCPFrom.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-              }
-              
-              System.out.println("DELETING");
-              if (f.exists()) f.delete();
-              
-              try {
-                  if (channel.isConnected()) channel.disconnect();
-              }catch(NullPointerException exc) {
-                  
-              }
-              try {
-                  if (session.isConnected()) session.disconnect();
-              }catch(NullPointerException exc) {
-                  
-              }
-              break;
-          }
-          
-          
-          if (hasdownloaded) {    
-              File f_delete = new File(Instance_data.getTmpPath() + "\\" + flnm);
+            }
 
-              while(!f_delete.delete())System.out.println("DELETING");
-              
-              System.out.println("FILE DELETED");
-          }
-        
-          i = Instance_data.getDlindx();
-
-          hasdownloaded = false;
+            try {
+                if(fos!=null)fos.close();
+            }catch(Exception ee){}
           
+            Instance_hold.getSCPFrom_Monitor().setClosedlmonitor(true);
+          
+            if (Instance_hold.getSCPFrom_Monitor().isExit() || Instance_hold.getSCPFrom_Monitor().isNewsession() || Instance_hold.getSCPFrom_Monitor().isPlremove()) {
+                Instance_hold.getVplay_mon().setExit(true);
+                Instance_hold.getVplay_mon().setIrruptflag(1);
+                do {
+                    System.out.println("SCP: VPlay is waiting to exit");
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }while (Instance_hold.getVplay().isAlive());
+                Instance_hold.getVplay_mon().setExit(false);
+                Instance_hold.getVplay_mon().setIrruptflag(0);
+
+                    System.out.println("DELETING");
+                    if (f.exists()) f.delete();
+
+                    try {
+                        if (channel.isConnected()) channel.disconnect();
+                    }catch(NullPointerException exc) {
+
+                    }
+                    try {
+                        if (session.isConnected()) session.disconnect();
+                    }catch(NullPointerException exc) {
+
+                    }
+                    break;
+                }
+          
+          
+            if (hasdownloaded) {    
+                File f_delete = new File(Instance_data.getTmpPath() + "\\" + flnm);
+
+                while(!f_delete.delete())System.out.println("DELETING");
+
+                System.out.println("FILE DELETED");
+            }
+
+            i = Instance_data.getDlindx();
+
+            hasdownloaded = false;
         }
 
         System.out.println("DOWNLOAD FINISHED: " + Instance_hold.getSCPFrom_Monitor().isDlfinish());
@@ -296,8 +294,7 @@ public class SCPFrom extends Thread{
         }
     }while(i<Instance_hold.getPl().getEntries().size());
 
-    System.out.println("SCPFROM: I AM EXITED");
-    
+    System.out.println("SCPFROM: I AM EXITED");  
   }
 
     public ChannelSftp getChannel() {
@@ -310,37 +307,7 @@ public class SCPFrom extends Thread{
      * @return int
      * @throws IOException 
      */
-    /*
-  static int checkAck(InputStream in) throws IOException{
-    int b=in.read();
-    // b may be 0 for success,
-    // 1 for error,
-    // 2 for fatal error,
-    // -1
-    if (b == 0) return b;
-    if (b == -1) return b;
 
-    if(b == 1 || b == 2){
-        StringBuffer sb=new StringBuffer();
-        int c;
-        
-        do {
-            c = in.read();
-            sb.append((char)c);
-        }while(c!='\n');
-        
-        if(b == 1) { // error
-            System.out.print(sb.toString());
-        }
-        
-        if(b == 2){ // fatal error
-            System.out.print(sb.toString());
-        }
-    }
-    
-    return b;
-  }
-*/
     public boolean isPromptedyet() {
         return promptedyet;
     }
@@ -357,7 +324,7 @@ public class SCPFrom extends Thread{
         this.f = f;
     }
 
-    public MySystemOutProgressMonitor getMonitor() {
+    public SCP_OutProgressMonitor getMonitor() {
         return monitor;
     }
 

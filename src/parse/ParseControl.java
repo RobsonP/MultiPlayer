@@ -199,6 +199,5 @@ public class ParseControl {
         strbuf.append(strlist[1].charAt(0));
         
         return strbuf.toString();
-    }
-    
+    }    
 }

@@ -22,7 +22,7 @@ public class FC_tmp_Listener implements ActionListener{
     public void actionPerformed(ActionEvent e) {  
         if (e.getActionCommand().equals("ApproveSelection")) {
             file = jfc.getSelectedFile();
-            Instance_hold.getSettDiag().getjTextField_tmp().setText(file.getPath());
+            Instance_hold.getSetframe().getjTextField_tmp().setText(file.getPath());
         }
     }
 

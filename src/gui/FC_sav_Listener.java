@@ -35,16 +35,12 @@ public class FC_sav_Listener implements ActionListener{
                 fw = new FileWriter(file);
                 bufwr = new BufferedWriter(fw);
                 
-                bufwr.write(Instance_hold.getSettDiag().getjTextField_uname().getText() + "\n");
-                if (Instance_hold.getSettDiag().getjTextField_RSA().getText().equals("")) bufwr.write("EMPTY" + "\n");
-                else bufwr.write(Instance_hold.getSettDiag().getjTextField_RSA().getText() + "\n");
-                bufwr.write(Instance_hold.getSettDiag().getjTextField_tmp().getText() + "\n");
-                bufwr.write(Instance_hold.getSettDiag().getjTextField_server().getText() + "\n");
-                if (Instance_hold.getSettDiag().getjTextField_port().getText().equals("")) {
-                    bufwr.write("22");
-                }else {
-                    bufwr.write(Instance_hold.getSettDiag().getjTextField_port().getText());
-                }
+                bufwr.write(Instance_hold.getSetframe().getjTextField_uname().getText() + "\n");
+                if (Instance_hold.getSetframe().getjTextField_RSA().getText().equals("")) bufwr.write("EMPTY" + "\n");
+                else bufwr.write(Instance_hold.getSetframe().getjTextField_RSA().getText() + "\n");
+                bufwr.write(Instance_hold.getSetframe().getjTextField_tmp().getText() + "\n");
+                bufwr.write(Instance_hold.getSetframe().getjTextField_server().getText() + "\n");
+                bufwr.write(Instance_hold.getSetframe().getjTextField_port().getText());
                 
                 bufwr.flush();
                 
@@ -52,12 +48,11 @@ public class FC_sav_Listener implements ActionListener{
                 fw.close();
                 
                 JOptionPane.showMessageDialog(null, "File saved", null, JOptionPane.INFORMATION_MESSAGE);
-                Instance_hold.getSettDiag().dispose();
+                Instance_hold.getSetframe().dispose();
             } catch (IOException ex) {
                 Logger.getLogger(FC_sav_Listener.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-      
     }
 
     public JFileChooser getJfc() {
@@ -67,5 +62,4 @@ public class FC_sav_Listener implements ActionListener{
     public void setJfc(JFileChooser jfc) {
         this.jfc = jfc;
     }
-    
 }

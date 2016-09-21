@@ -5,16 +5,16 @@
 package instance;
 
 import cmd.ConnectThread;
-import cmd.Listen;
-import cmd.SCPFrom;
+import cmd.Shell_Out;
+import cmd.SCP;
 import cmd.Shell;
-import monitor.VPlay_Monitor;
+import monitor.Play_Monitor;
 import monitor.Listen_Monitor;
 import data.Playlist;
 import monitor.SCPFrom_Monitor;
 import monitor.Shell_Monitor;
 import gui.*;
-import soSSH.Video_Play;
+import soSSH.Play;
 
 /**
  * contains all instances of all classes with non-static variables
@@ -23,21 +23,21 @@ import soSSH.Video_Play;
  * @author RobsonP
  */
 public class Instance_hold {
-    private static Listen listen = new Listen();
+    private static Shell_Out listen = new Shell_Out();
     private static Shell sh = new Shell();
-    private static SCPFrom scpfrom = new SCPFrom();
+    private static SCP scp = new SCP();
     private static Image_hold im_hold = new Image_hold();
     private static MainFrame mframe = new MainFrame();
     private static Playlist pl = new Playlist();
-    private static Video_Play vplay = new Video_Play();
+    private static Play play = new Play();
     private static Shell_Monitor sh_mon = new Shell_Monitor();
-    private static VPlay_Monitor vplay_mon = new VPlay_Monitor();
-    private static Listen_Monitor lm = new Listen_Monitor();
-    private static SCPFrom_Monitor scpFrom_Monitor = new SCPFrom_Monitor();
+    private static Play_Monitor play_mon = new Play_Monitor();
+    private static Listen_Monitor list_mon = new Listen_Monitor();
+    private static SCPFrom_Monitor scp_mon = new SCPFrom_Monitor();
     private static PlayFrame playframe = new PlayFrame();
     private static FullScreenFrame fsf = new FullScreenFrame();
     private static FS_Navi_Tab fsnt = new FS_Navi_Tab();
-    private static SettingsDiag settdiag = new SettingsDiag();
+    private static SettingsDiag setframe = new SettingsDiag();
     private static MessageThread mthread;    
     private static PasswordDiagRSA pframeRSA = new PasswordDiagRSA();
     private static PasswordDiag pframe = new PasswordDiag();
@@ -60,12 +60,12 @@ public class Instance_hold {
         Instance_hold.pl = pl;
     }
 
-    public static Video_Play getVplay() {
-        return vplay;
+    public static Play getVplay() {
+        return play;
     }
 
-    public static void setVplay(Video_Play vplay) {
-        Instance_hold.vplay = vplay;
+    public static void setVplay(Play vplay) {
+        Instance_hold.play = vplay;
     }
 
     public static Shell_Monitor getSh_mon() {
@@ -76,23 +76,22 @@ public class Instance_hold {
         Instance_hold.sh_mon = sh_mon;
     }
 
-    public static VPlay_Monitor getVplay_mon() {
-        return vplay_mon;
+    public static Play_Monitor getVplay_mon() {
+        return play_mon;
     }
 
-    public static void setVplay_mon(VPlay_Monitor vplay_mon) {
-        Instance_hold.vplay_mon = vplay_mon;
+    public static void setVplay_mon(Play_Monitor vplay_mon) {
+        Instance_hold.play_mon = vplay_mon;
     }
 
 
     public static SCPFrom_Monitor getSCPFrom_Monitor() {
-        return scpFrom_Monitor;
+        return scp_mon;
     }
 
     public static void setFrom_Monitor(SCPFrom_Monitor cnt_SCPFrom_Monitor) {
-        Instance_hold.scpFrom_Monitor = cnt_SCPFrom_Monitor;
+        Instance_hold.scp_mon = cnt_SCPFrom_Monitor;
     }
-
 
     public static PlayFrame getPlayframe() {
         return playframe;
@@ -118,12 +117,12 @@ public class Instance_hold {
         Instance_hold.fsnt = fsnt;
     }
 
-    public static SettingsDiag getSettDiag() {
-        return settdiag;
+    public static SettingsDiag getSetframe() {
+        return setframe;
     }
 
-    public static void setSettDiag(SettingsDiag setframe) {
-        Instance_hold.settdiag = setframe;
+    public static void setSetframe(SettingsDiag setframe) {
+        Instance_hold.setframe = setframe;
     }
 
     public static MessageThread getMthread() {
@@ -135,15 +134,15 @@ public class Instance_hold {
     }
 
     public static Listen_Monitor getLm() {
-        return lm;
+        return list_mon;
     }
 
     public static void setLm(Listen_Monitor lm) {
-        Instance_hold.lm = lm;
+        Instance_hold.list_mon = lm;
     }
      
     public static void create_VPlay() {
-        if (!Instance_hold.getVplay().isAlive()) Instance_hold.vplay = new Video_Play();
+        if (!Instance_hold.getVplay().isAlive()) Instance_hold.play = new Play();
     }
 
     public static PasswordDiagRSA getPframeRSA() {
@@ -170,19 +169,19 @@ public class Instance_hold {
         Instance_hold.sh = sh;
     }
 
-    public static SCPFrom getScpfrom() {
-        return scpfrom;
+    public static SCP getScpfrom() {
+        return scp;
     }
 
-    public static void setScpfrom(SCPFrom scpfrom) {
-        Instance_hold.scpfrom = scpfrom;
+    public static void setScpfrom(SCP scpfrom) {
+        Instance_hold.scp = scpfrom;
     }
 
-    public static Listen getListen() {
+    public static Shell_Out getListen() {
         return listen;
     }
 
-    public static void setListen(Listen listen) {
+    public static void setListen(Shell_Out listen) {
         Instance_hold.listen = listen;
     }
 
@@ -197,5 +196,4 @@ public class Instance_hold {
     public static void setCthread(ConnectThread cthread) {
         Instance_hold.cthread = cthread;
     }
-
 }

@@ -3,14 +3,15 @@
  * and open the template in the editor.
  */
 package gui;
-
+/*
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.geom.GeneralPath;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+*/
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.geom.GeneralPath;
 import javax.swing.ImageIcon;
 import javax.swing.JSlider;
 import javax.swing.UIManager;
@@ -33,7 +34,6 @@ public class MySliderUI extends BasicSliderUI{
     @Override
     protected TrackListener createTrackListener(JSlider slider) {
         return new TrackListener() {
-
             @Override public void mousePressed(MouseEvent e) {
                 JSlider slider = (JSlider)e.getSource();
                 switch (slider.getOrientation()) {
@@ -56,7 +56,6 @@ public class MySliderUI extends BasicSliderUI{
     
     @Override
     public void paintThumb (Graphics g) {
-        
         g.setColor(Color.RED);
         g.fillOval(thumbRect.x, thumbRect.y+5, 10, 10);
         g.setColor(Color.WHITE);

@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.UIManager.*;
 
 
 
@@ -50,16 +51,25 @@ public class MainFrame extends javax.swing.JFrame {
     int count;
     public boolean playcontrol = true, interrupted = false, stop = false, statechange = false, dragged = false;
 
-
     /** Creates new form MainFrame */
     public MainFrame() {
-               
+        try {
+    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+        if ("Nimbus".equals(info.getName())) {
+            UIManager.setLookAndFeel(info.getClassName());
+            break;
+        }
+    }
+} catch (Exception e) {
+    // If Nimbus is not available, you can set the GUI to another look and feel.
+}
+        /*       
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        */
         initComponents();
         /*
         try {
@@ -108,7 +118,6 @@ public class MainFrame extends javax.swing.JFrame {
         this.jSlider_Media.setForeground(new Color(240,240,240));
         
         this.jPanel_nav.setVisible(false);
-        //this.jButton_connect.setEnabled(false);
         
         Color c = new Color(240,240,240);
         Container con = this.getContentPane();
@@ -129,13 +138,11 @@ public class MainFrame extends javax.swing.JFrame {
         this.jLabel_dir_info.setText("");
 
         top = new DefaultMutableTreeNode("/");
-        //Instance_data.create_new_Nodelist();
         this.setTitle("SoSSH");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(wlistener);
         this.addComponentListener(clistener);
         this.addWindowStateListener(new WindowStateListener() {
-
             @Override
             public void windowStateChanged(WindowEvent e) {
                 statechange = true;
@@ -161,44 +168,18 @@ public class MainFrame extends javax.swing.JFrame {
                     column.setPreferredWidth((int)(Instance_hold.getMframe().getSize().width*0.3));
                     Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+200, (int)Instance_hold.getMframe().getLocation().getY()+80);
                 }
-            }   
-            
+            }      
         });
+        
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 boolean crdir = false;
 
-                Instance_hold.getSCPFrom_Monitor().setExit(true);
+                System.out.println("WINDOW CLOSING ACTION");
+                
                 Instance_hold.getVplay_mon().setExit(true);
-                Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
                 Instance_hold.getVplay_mon().setIrruptflag(1);
-                Instance_hold.getSh_mon().setExit(true);
-                
-                while (Instance_hold.getSCPFrom_Monitor().getIrruptflag() == 1) {
-                    if (!Instance_hold.getScpfrom().isAlive()) Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                    //ex.printStackTrace();
-                    }
-                }
-                
-                if (!Instance_hold.getVplay().isAlive()) {
-                    try {
-                        if (Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
-                            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
-                            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().release();
-                        }
-                        if (Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                            Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
-                            Instance_hold.getFsf().getEmpc().getMediaPlayer().release();
-                        }
-                    }catch(NullPointerException exc) {
-                        
-                    }
-                }
-                
                 do {
                     System.out.println("VPlay is waiting to exit");
                     try {
@@ -210,6 +191,25 @@ public class MainFrame extends javax.swing.JFrame {
                 Instance_hold.getVplay_mon().setExit(false);
                 Instance_hold.getVplay_mon().setIrruptflag(0);
                 
+                Instance_hold.getSCPFrom_Monitor().setExit(true);
+                Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
+                if (Instance_hold.getScpfrom().isAlive()) {
+                    Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
+                    do{
+                            System.out.println("waiting for SCP release");
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }while(Instance_hold.getScpfrom().isAlive());
+                    Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
+                    
+                    Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
+                    Instance_hold.getSCPFrom_Monitor().setExit(false);
+                }
+
+                Instance_hold.getSh_mon().setExit(true);
                 while (Instance_hold.getSh().isAlive()) {
                     System.out.println("WAITING FOR SHELL EXIT");
                     try {
@@ -218,27 +218,23 @@ public class MainFrame extends javax.swing.JFrame {
                         //ex.printStackTrace();
                     }
                 }
-                
-                try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        //ex.printStackTrace();
-                    }
+                Instance_hold.getSh_mon().setExit(true);
+
                 try {
                     File file = new File(Instance_data.getTmpPath());
                     Main_controls.del(file);
-                    
+
                     crdir = file.mkdirs();
                 }catch (NullPointerException exc) {
                     System.out.println("Temp-Path doesn't exist!!!");
                 }
-                
+
                 Instance_hold.getFsf().getWmh().release();
                 Instance_hold.getMframe().dispose();
                 System.exit(0);
-                
             }
         });
+        
         System.out.println("BREITE: " + java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth());
         System.out.println("HOEHE: " + java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         this.setLocation((int)(java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2-this.getWidth()/2), (int)(java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2-this.getHeight()/2));
@@ -274,6 +270,11 @@ public class MainFrame extends javax.swing.JFrame {
         jButton_up = new javax.swing.JButton();
         jButton_down = new javax.swing.JButton();
         jButton_delete = new javax.swing.JButton();
+        jPanel_loadfile = new javax.swing.JPanel();
+        jProgressBar_SCP = new javax.swing.JProgressBar();
+        jLabel_src = new javax.swing.JLabel();
+        jLabel_speedval = new javax.swing.JLabel();
+        jLabel_speed = new javax.swing.JLabel();
         jPanel_nav = new javax.swing.JPanel();
         jSlider_Media = new javax.swing.JSlider();
         jSlider_vol = new javax.swing.JSlider();
@@ -284,11 +285,7 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel_volume = new javax.swing.JLabel();
         jLabel_next = new javax.swing.JLabel();
         jLabel_medianame = new javax.swing.JLabel();
-        jPanel_loadfile = new javax.swing.JPanel();
-        jProgressBar_SCP = new javax.swing.JProgressBar();
-        jLabel_src = new javax.swing.JLabel();
-        jLabel_speedval = new javax.swing.JLabel();
-        jLabel_speed = new javax.swing.JLabel();
+        jToggleButton_lock = new javax.swing.JToggleButton();
         jMenuBar_main = new javax.swing.JMenuBar();
         jMenu_File = new javax.swing.JMenu();
         jMenuItem_new = new javax.swing.JMenuItem();
@@ -400,20 +397,42 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
 
-        jPanel_nav.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel_navMouseClicked(evt);
-            }
-        });
+        jLabel_speedval.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        jLabel_speed.setText("kB/s");
+
+        javax.swing.GroupLayout jPanel_loadfileLayout = new javax.swing.GroupLayout(jPanel_loadfile);
+        jPanel_loadfile.setLayout(jPanel_loadfileLayout);
+        jPanel_loadfileLayout.setHorizontalGroup(
+            jPanel_loadfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jProgressBar_SCP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel_src, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_loadfileLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel_speedval, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_speed))
+        );
+        jPanel_loadfileLayout.setVerticalGroup(
+            jPanel_loadfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_loadfileLayout.createSequentialGroup()
+                .addGroup(jPanel_loadfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_speed)
+                    .addComponent(jLabel_speedval, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_src, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jProgressBar_SCP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         jSlider_Media.setMaximum(1000);
         jSlider_Media.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jSlider_Media.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jSlider_MediaMouseClicked(evt);
-            }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jSlider_MediaMouseReleased(evt);
+            }
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jSlider_MediaMouseClicked(evt);
             }
         });
         jSlider_Media.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -430,9 +449,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel_prev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_prev_small.png"))); // NOI18N
         jLabel_prev.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_prevMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_prevMouseClicked(evt);
             }
@@ -445,15 +461,15 @@ public class MainFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_prevMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_prevMouseReleased(evt);
+            }
         });
 
         jLabel_time.setText("0:00");
 
         jLabel_stop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_stop_small.png"))); // NOI18N
         jLabel_stop.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_stopMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_stopMouseClicked(evt);
             }
@@ -466,13 +482,13 @@ public class MainFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_stopMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_stopMouseReleased(evt);
+            }
         });
 
         jLabel_play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_pause_small.png"))); // NOI18N
         jLabel_play.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_playMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_playMouseClicked(evt);
             }
@@ -491,9 +507,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         jLabel_next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_fwd_small.png"))); // NOI18N
         jLabel_next.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_nextMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_nextMouseClicked(evt);
             }
@@ -506,9 +519,19 @@ public class MainFrame extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_nextMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_nextMouseReleased(evt);
+            }
         });
 
         jLabel_medianame.setText(" ");
+
+        jToggleButton_lock.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/playframe_toggle.png"))); // NOI18N
+        jToggleButton_lock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton_lockActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_navLayout = new javax.swing.GroupLayout(jPanel_nav);
         jPanel_nav.setLayout(jPanel_navLayout);
@@ -516,73 +539,48 @@ public class MainFrame extends javax.swing.JFrame {
             jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSlider_Media, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel_navLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addComponent(jLabel_medianame)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addComponent(jLabel_play)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_stop)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel_time)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                        .addComponent(jLabel_prev)
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel_next)
-                        .addGap(110, 110, 110)
-                        .addComponent(jLabel_volume)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26))))
+                .addGap(40, 40, 40)
+                .addComponent(jLabel_medianame)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel_navLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_play)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_stop)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_time)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addComponent(jLabel_prev)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel_next)
+                .addGap(39, 39, 39)
+                .addComponent(jToggleButton_lock, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addComponent(jLabel_volume)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(62, 62, 62))
         );
         jPanel_navLayout.setVerticalGroup(
             jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_navLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jSlider_Media, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
                 .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
+                        .addGap(14, 14, 14)
                         .addComponent(jLabel_time))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_stop)
-                            .addComponent(jLabel_play)))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel_navLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSlider_vol, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                            .addComponent(jLabel_volume, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jLabel_stop)
+                    .addComponent(jLabel_play)
+                    .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel_navLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel_volume)
+                        .addComponent(jToggleButton_lock, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel_medianame))
         );
-
-        javax.swing.GroupLayout jPanel_loadfileLayout = new javax.swing.GroupLayout(jPanel_loadfile);
-        jPanel_loadfile.setLayout(jPanel_loadfileLayout);
-        jPanel_loadfileLayout.setHorizontalGroup(
-            jPanel_loadfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jProgressBar_SCP, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-            .addComponent(jLabel_src, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel_loadfileLayout.setVerticalGroup(
-            jPanel_loadfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_loadfileLayout.createSequentialGroup()
-                .addComponent(jLabel_src, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar_SCP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        jLabel_speedval.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-
-        jLabel_speed.setText("kB/s");
 
         jMenu_File.setText("File");
 
@@ -619,7 +617,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenu_Help.setText("Help");
 
-        jMenuItem_about.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/info.jpg"))); // NOI18N
+        jMenuItem_about.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/info.png"))); // NOI18N
         jMenuItem_about.setText("about");
         jMenuItem_about.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -662,85 +660,72 @@ public class MainFrame extends javax.swing.JFrame {
                                     .addComponent(jProgressBar_main, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton_addToPlaylist))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jSplitPane_main, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jSplitPane_main, javax.swing.GroupLayout.PREFERRED_SIZE, 732, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(28, 28, 28)
                         .addComponent(jLabel_Main)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel_nav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(44, 44, 44)))
+                        .addGap(32, 32, 32)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane_Playlist, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                    .addComponent(jPanel_loadfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(4, 4, 4)
+                            .addComponent(jButton_up, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jButton_down, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane_Playlist, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
-                            .addComponent(jPanel_loadfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(4, 4, 4)
-                                    .addComponent(jButton_up, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jButton_down, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel_speedval, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel_speed)
-                        .addGap(47, 47, 47))))
+                        .addComponent(jButton_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel_speed)
-                                .addComponent(jLabel_speedval, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(46, 46, 46))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel_Main, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jPanel_loadfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jPanel_loadfile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel_Main, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel_nav, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)))
+                        .addContainerGap()
+                        .addComponent(jPanel_nav, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(52, 52, 52)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane_Playlist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton_addToPlaylist)
-                            .addComponent(jButton_delete))
-                        .addGap(139, 139, 139)
-                        .addComponent(jButton_up)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_down)
-                        .addGap(0, 114, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton_delete)
+                                .addGap(173, 173, 173)
+                                .addComponent(jButton_up)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton_down))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jTextField_Server, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel_Server)
+                                    .addComponent(jTextField_Port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel_Port)
+                                    .addComponent(jButton_connect))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jProgressBar_main, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel_object)
+                                        .addComponent(jLabel_dir_info))))
+                            .addComponent(jButton_addToPlaylist))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField_Server, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_Server)
-                            .addComponent(jTextField_Port, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel_Port)
-                            .addComponent(jButton_connect))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jProgressBar_main, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel_object)
-                                .addComponent(jLabel_dir_info)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSplitPane_main, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane_Playlist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(73, 73, 73)
+                        .addComponent(jSplitPane_main, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -748,10 +733,13 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_connectActionPerformed
-        //System.out.println("Connect: " + tryToConnect);
-        //if (!tryToConnect) {
-            System.out.println("CONNECTION STARTED");
-        //tryToConnect = true;
+        System.out.println("CONNECTION STARTED");
+        Instance_hold.getSetframe().getjButton_import().setEnabled(false);
+
+        if (this.jTextPane_info.getText().equals("")) {
+            Instance_data.setLs("/");
+        }else Instance_data.setLs(this.jTextPane_info.getText());
+        
         Main_controls.connect();
         
     }//GEN-LAST:event_jButton_connectActionPerformed
@@ -785,12 +773,10 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTable_playlistMouseClicked
 
     private void jMenuItem_settingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_settingsActionPerformed
-        Instance_hold.getSettDiag().setVisible(true);
+        Instance_hold.getSetframe().setVisible(true);
     }//GEN-LAST:event_jMenuItem_settingsActionPerformed
 
     private void jMenuItem_newActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_newActionPerformed
-        
-        
         Instance_hold.getPlayframe().setAlwaysOnTop(false);
         
         Object[] options = {"Yes, please",
@@ -803,7 +789,7 @@ public class MainFrame extends javax.swing.JFrame {
                 null,
                 options,
                 options[1]);
-        
+
         if (n == 0) {
             Main_controls.newSession();
         }
@@ -853,76 +839,105 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel_MainMouseClicked
 
     private void jMenuItem_aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_aboutActionPerformed
-        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.74\n\nDesigned by Robert Mautz");
+        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.8\n\nDesigned by Robert Mautz");
     }//GEN-LAST:event_jMenuItem_aboutActionPerformed
 
     private void jMenuItem_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_exitActionPerformed
         boolean crdir = false;
+        
+        Object[] options = {"Yes, please",
+                    "No, thanks"};
+        int n = JOptionPane.showOptionDialog(null,
+                "Are you sure to Exit? ",                
+                "Exit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
 
-        Instance_hold.getSCPFrom_Monitor().setExit(true);
-        Instance_hold.getVplay_mon().setExit(true);
-        Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
-        Instance_hold.getVplay_mon().setIrruptflag(1);
-        Instance_hold.getSh_mon().setExit(true);
+        if (n == 0) {
+            System.out.println("WINDOW CLOSING ACTION");
 
-        while (Instance_hold.getSCPFrom_Monitor().getIrruptflag() == 1) {
-            if (!Instance_hold.getScpfrom().isAlive()) Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-            //ex.printStackTrace();
-            }
-        }
-
-        do {
-            System.out.println("VPlay is waiting to exit");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }while (Instance_hold.getVplay().isAlive());
-        Instance_hold.getVplay_mon().setExit(false);
-        Instance_hold.getVplay_mon().setIrruptflag(0);
-
-        while (Instance_hold.getSh().isAlive()) {
-            System.out.println("WAITING FOR SHELL EXIT");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //ex.printStackTrace();
-            }
-        }
-
-        try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-                //ex.printStackTrace();
-            }
-        try {
-            File file = new File(Instance_data.getTmpPath());
-            Main_controls.del(file);
+            Instance_hold.getVplay_mon().setExit(true);
+            Instance_hold.getVplay_mon().setIrruptflag(1);
             do {
-                crdir = file.mkdirs();
-            }while(!crdir);
-        }catch (NullPointerException exc) {
-            System.out.println("Temp-Path doesn't exist!!!");
-        }
+                System.out.println("VPlay is waiting to exit");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }while (Instance_hold.getVplay().isAlive());
+            Instance_hold.getVplay_mon().setExit(false);
+            Instance_hold.getVplay_mon().setIrruptflag(0);
 
-        Instance_hold.getFsf().getWmh().release();
-        Instance_hold.getMframe().dispose();
-        System.exit(0);
+            Instance_hold.getSCPFrom_Monitor().setExit(true);
+            Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
+            if (Instance_hold.getScpfrom().isAlive()) {
+                Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
+                do{
+                        System.out.println("waiting for SCP release");
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }while(Instance_hold.getScpfrom().isAlive());
+                Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
+
+                Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
+                Instance_hold.getSCPFrom_Monitor().setExit(false);
+            }
+
+            Instance_hold.getSh_mon().setExit(true);
+            while (Instance_hold.getSh().isAlive()) {
+                System.out.println("WAITING FOR SHELL EXIT");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    //ex.printStackTrace();
+                }
+            }
+            Instance_hold.getSh_mon().setExit(true);
+
+            try {
+                File file = new File(Instance_data.getTmpPath());
+                Main_controls.del(file);
+
+                crdir = file.mkdirs();
+            }catch (NullPointerException exc) {
+                System.out.println("Temp-Path doesn't exist!!!");
+            }
+
+            Instance_hold.getFsf().getWmh().release();
+            Instance_hold.getMframe().dispose();
+            System.exit(0);
+        } 
     }//GEN-LAST:event_jMenuItem_exitActionPerformed
+
+    private void jSlider_MediaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseReleased
+        if (dragged) {
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(Instance_hold.getPlayframe().getSl_value()/1000.0)));
+            dragged = false;
+        }
+    }//GEN-LAST:event_jSlider_MediaMouseReleased
+
+    private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
+        if (!dragged) Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));
+    }//GEN-LAST:event_jSlider_MediaMouseClicked
+
+    private void jSlider_MediaMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseDragged
+        dragged = true;
+        Instance_hold.getPlayframe().setSl_value(this.jSlider_Media.getValue());
+    }//GEN-LAST:event_jSlider_MediaMouseDragged
 
     private void jSlider_volMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_volMouseDragged
         Instance_hold.getPlayframe().setVo_value(this.jSlider_vol.getValue());
-        Instance_hold.getPlayframe().getjSlider_vol().setValue(this.jSlider_vol.getValue());
         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setVolume(Instance_hold.getPlayframe().getVo_value());
+        Instance_hold.getPlayframe().getjSlider_vol().setValue(Instance_hold.getPlayframe().getVo_value());
+        Instance_hold.getFsnt().getjSlider_vol().setValue(Instance_hold.getPlayframe().getVo_value());
     }//GEN-LAST:event_jSlider_volMouseDragged
-
-    private void jLabel_prevMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseReleased
-        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
-    }//GEN-LAST:event_jLabel_prevMouseReleased
 
     private void jLabel_prevMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseClicked
         System.out.println("PLAYCONTROL: " + this.playcontrol);
@@ -958,9 +973,9 @@ public class MainFrame extends javax.swing.JFrame {
         this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_green_prev_small());
     }//GEN-LAST:event_jLabel_prevMousePressed
 
-    private void jLabel_stopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseReleased
-        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
-    }//GEN-LAST:event_jLabel_stopMouseReleased
+    private void jLabel_prevMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMouseReleased
+        this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_blue_prev_small());
+    }//GEN-LAST:event_jLabel_prevMouseReleased
 
     private void jLabel_stopMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseClicked
         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
@@ -971,6 +986,7 @@ public class MainFrame extends javax.swing.JFrame {
                 Logger.getLogger(PlayFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
         this.jSlider_Media.setValue(0);
         stop = true;
@@ -988,9 +1004,9 @@ public class MainFrame extends javax.swing.JFrame {
         this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_green_stop_small());
     }//GEN-LAST:event_jLabel_stopMousePressed
 
-    private void jLabel_playMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseReleased
-
-    }//GEN-LAST:event_jLabel_playMouseReleased
+    private void jLabel_stopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseReleased
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
+    }//GEN-LAST:event_jLabel_stopMouseReleased
 
     private void jLabel_playMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseClicked
         if (this.playcontrol) {
@@ -998,12 +1014,14 @@ public class MainFrame extends javax.swing.JFrame {
             if (!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
                 Instance_hold.getPlayframe().getEmpc().getMediaPlayer().start();
                 while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
+                    //System.out.println("WAITING TO START PLAYING:::::");
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
 
                     }
-                };
+                }
+
                 this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_pause_small());
                 stop = false;
             }
@@ -1042,14 +1060,11 @@ public class MainFrame extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jLabel_playMousePressed
 
-    private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
-        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
-    }//GEN-LAST:event_jLabel_nextMouseReleased
-
     private void jLabel_nextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseClicked
         System.out.println("PLAYCONTROL: " + this.playcontrol);
         if (this.playcontrol) {
             this.playcontrol = false;
+            //System.out.println("PLAYCONTROL: " + this.playcontrol);
 
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
             this.setEnabled(false);
@@ -1066,7 +1081,6 @@ public class MainFrame extends javax.swing.JFrame {
             this.setEnabled(true);
             this.playcontrol = true;
         }
-
     }//GEN-LAST:event_jLabel_nextMouseClicked
 
     private void jLabel_nextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseEntered
@@ -1081,73 +1095,40 @@ public class MainFrame extends javax.swing.JFrame {
         this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_green_fwd_small());
     }//GEN-LAST:event_jLabel_nextMousePressed
 
-    private void jPanel_navMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel_navMouseClicked
-        if (evt.getClickCount() >= 2) {
-            this.jPanel_nav.setVisible(false);
-            Instance_hold.getPlayframe().setVisible(true);
-            Instance_hold.getPlayframe().getjLabel_play().setIcon(this.jLabel_play.getIcon());
-            Instance_hold.getPlayframe().getjLabel_stop().setIcon(this.jLabel_stop.getIcon());
-            Instance_hold.getPlayframe().getjLabel_prev().setIcon(this.jLabel_prev.getIcon());
-            Instance_hold.getPlayframe().getjLabel_next().setIcon(this.jLabel_next.getIcon());
-            Instance_hold.getPlayframe().setStop(this.stop);
-        }
-    }//GEN-LAST:event_jPanel_navMouseClicked
+    private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
+        this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
+    }//GEN-LAST:event_jLabel_nextMouseReleased
 
-    private void jSlider_MediaMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseDragged
-        if (dragged) {
-            int sl_value = this.jSlider_Media.getValue();
-            System.out.println("SETTIME_VALUE: " + (int)(Instance_data.getMedia_length()*(sl_value/1000.0)));
-            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(Instance_hold.getPlayframe().getSl_value()/1000.0)));
-            dragged = false;
-        }
-    }//GEN-LAST:event_jSlider_MediaMouseDragged
-
-    private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
-       if (!dragged) Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));
-    }//GEN-LAST:event_jSlider_MediaMouseClicked
-
-    private void jSlider_MediaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseReleased
-        if (dragged) {
-            int sl_value = this.jSlider_Media.getValue();
-            System.out.println("SETTIME_VALUE: " + (int)(Instance_data.getMedia_length()*(sl_value/1000.0)));
-            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(Instance_hold.getPlayframe().getSl_value()/1000.0)));
-            dragged = false;
-        }
-    }//GEN-LAST:event_jSlider_MediaMouseReleased
+    private void jToggleButton_lockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton_lockActionPerformed
+        this.jPanel_nav.setVisible(false);
+        Instance_hold.getPlayframe().setVisible(true);
+        Instance_hold.getPlayframe().getjLabel_play().setIcon(this.jLabel_play.getIcon());
+        Instance_hold.getPlayframe().getjLabel_stop().setIcon(this.jLabel_stop.getIcon());
+        Instance_hold.getPlayframe().getjLabel_prev().setIcon(this.jLabel_prev.getIcon());
+        Instance_hold.getPlayframe().getjLabel_next().setIcon(this.jLabel_next.getIcon());
+        Instance_hold.getPlayframe().setStop(this.stop);
+        Instance_hold.getPlayframe().getjToggleButton_lock().setSelected(false);
+    }//GEN-LAST:event_jToggleButton_lockActionPerformed
 
     public void createTopNodes(List<Node_entry> nodelist) {
         for (int i=0;i<nodelist.size();i++) {
-            //System.out.println("Node: " + nodelist.get(i).getName());
-            //Instance_data.getAllnodes().add(nodelist.get(i));
             DefaultMutableTreeNode dmtn =  new DefaultMutableTreeNode(nodelist.get(i).getName());
             if (nodelist.get(i).getType() == 'd') dmtn.add(new DefaultMutableTreeNode("content of " + nodelist.get(i).getName()));
             
             top.add(dmtn);
-
-            //Instance_data.getAllnodes().get(Instance_data.getAllnodes().size()-1).setPath("[/, " + top.getChildAt(i).toString() + "]");
         }         
     }
    
     public void addNodestoBranch(List<Node_entry> nodelist, TreePath path) {
         DefaultMutableTreeNode lastcomp = (DefaultMutableTreeNode) path.getLastPathComponent(); 
-        //lastcomp.
-        
-        //for (int i=0;lastcomp.get)
         
         if (nodelist.size() > 0) lastcomp.remove(0);
-        /*for (int i=0;i<lastcomp.getChildCount();i++) {
-            lastcomp.remove(0);
-        }
-        */
-        //lastcomp.removeAllChildren();
+
         for (int i=0;i<nodelist.size();i++) {
             System.out.println("Node: " + nodelist.get(i).getName());
-            //Instance_data.getAllnodes().add(nodelist.get(i));
             DefaultMutableTreeNode dmtn =  new DefaultMutableTreeNode(nodelist.get(i).getName());
             if (nodelist.get(i).getType() == 'd') dmtn.add(new DefaultMutableTreeNode("content of " + nodelist.get(i).getName()));
             lastcomp.add(dmtn);
-            
-            //Instance_data.getAllnodes().get(Instance_data.getAllnodes().size()-1).setPath(path.toString().substring(0, path.toString().length()-1) + ", " + lastcomp.getChildAt(i).toString() + "]");
         }
     }
 
@@ -1448,13 +1429,14 @@ public class MainFrame extends javax.swing.JFrame {
     public void setjLabel_medianame(JLabel jLabel_medianame) {
         this.jLabel_medianame = jLabel_medianame;
     }
-
     
+    public JToggleButton getjToggleButton_lock() {
+        return jToggleButton_lock;
+    }
     
     /**
      * @param args the command line arguments
      */
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_addToPlaylist;
     private javax.swing.JButton jButton_connect;
@@ -1498,7 +1480,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField_Port;
     private javax.swing.JTextField jTextField_Server;
     private javax.swing.JTextPane jTextPane_info;
+    private javax.swing.JToggleButton jToggleButton_lock;
     private javax.swing.JTree jTree_nav;
     // End of variables declaration//GEN-END:variables
-
 }

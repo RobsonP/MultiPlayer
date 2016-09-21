@@ -62,5 +62,4 @@ public class MyComponentListener implements ComponentListener{
     public void setVplay(boolean vplay) {
         this.vplay = vplay;
     }
-  
 }

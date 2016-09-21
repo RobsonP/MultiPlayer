@@ -28,6 +28,5 @@ public class NodeComparator implements Comparator<Node_entry> {
         }
       
         return 0;
-    }
-    
+    }   
 }

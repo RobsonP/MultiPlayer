@@ -16,38 +16,18 @@ public class Listen_Monitor {
         error = false;
     }
 
-    /**
-     * returns the trylisten-flag
-     * @return boolean
-     */
-    
     public synchronized boolean isTrylisten() {
         return trylisten;
     }
 
-    /**
-     * sets the trylisten-flag
-     * @param trylisten 
-     */
-    
     public synchronized void setTrylisten(boolean trylisten) {
         this.trylisten = trylisten;
     }
 
-    /**
-     * returns the exit-flag
-     * @return boolean
-     */
-    
     public synchronized boolean isExit() {
         return exit;
     }
 
-    /**
-     * sets the exit-flag
-     * @param exit 
-     */
-    
     public synchronized void setExit(boolean exit) {
         this.exit = exit;
     }
@@ -58,7 +38,5 @@ public class Listen_Monitor {
 
     public void setError(boolean error) {
         this.error = error;
-    }
-    
-    
+    }   
 }
