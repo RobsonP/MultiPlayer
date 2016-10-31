@@ -273,7 +273,13 @@ public class SettingsDiag extends JDialog {
 
     private void jButton_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_saveActionPerformed
         Instance_data.setUname(this.jTextField_uname.getText());
-        Instance_data.setRsakeyPath(this.jTextField_RSA.getText());
+        
+        if (this.jTextField_RSA.getText().equals("")) {
+            Instance_data.setRsakeyPath("EMPTY");
+        } else {
+            Instance_data.setRsakeyPath(this.jTextField_RSA.getText());
+        }
+        
         Instance_data.setTmpPath(this.jTextField_tmp.getText());
         Instance_hold.getMframe().getjTextField_Server().setText(this.jTextField_server.getText());
         

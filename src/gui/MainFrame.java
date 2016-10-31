@@ -839,7 +839,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel_MainMouseClicked
 
     private void jMenuItem_aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_aboutActionPerformed
-        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.8\n\nDesigned by Robert Mautz");
+        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.9\n\nDesigned by Robert Mautz");
     }//GEN-LAST:event_jMenuItem_aboutActionPerformed
 
     private void jMenuItem_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_exitActionPerformed
