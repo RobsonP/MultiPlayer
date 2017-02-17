@@ -233,6 +233,16 @@ public class SCP extends Thread{
             if (Instance_hold.getSCPFrom_Monitor().isExit() || Instance_hold.getSCPFrom_Monitor().isNewsession() || Instance_hold.getSCPFrom_Monitor().isPlremove()) {
                 Instance_hold.getVplay_mon().setExit(true);
                 Instance_hold.getVplay_mon().setIrruptflag(1);
+                /*
+                try {
+                    Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+                    //Instance_hold.getPlayframe().getEmpc().getMediaPlayer().release();
+                    //Instance_hold.getFsf().getEmpc().getMediaPlayer().release();
+                }catch(NullPointerException exc) {
+            
+                }
+                */
                 do {
                     System.out.println("SCP: VPlay is waiting to exit");
                     try {

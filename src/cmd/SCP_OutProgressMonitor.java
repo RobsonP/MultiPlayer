@@ -69,12 +69,20 @@ public class SCP_OutProgressMonitor implements SftpProgressMonitor
         if (new String(dest).endsWith("mp3") || new String(dest).endsWith("MP3") || new String(dest).endsWith("wav") || new String(dest).endsWith("WAV")) {
             if (anz16384bytes == 16) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
         }else if (!new String(dest).endsWith("jpg") && !new String(dest).endsWith("JPG")){
-            if (anz16384bytes == 128) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
+            if (anz16384bytes == 512) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
         }
         
         if (Instance_hold.getSCPFrom_Monitor().isClosechannelflag()) {
             Instance_hold.getVplay_mon().setExit(true);
             Instance_hold.getVplay_mon().setIrruptflag(1);
+            /*
+            try {
+                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+            }catch(NullPointerException exc) {
+            
+                }
+            */
             do {
                 System.out.println("VPlay is waiting to exit");
                 try {

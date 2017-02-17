@@ -60,9 +60,9 @@ public class MainFrame extends javax.swing.JFrame {
             break;
         }
     }
-} catch (Exception e) {
+        } catch (Exception e) {
     // If Nimbus is not available, you can set the GUI to another look and feel.
-}
+        }
         /*       
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -180,6 +180,13 @@ public class MainFrame extends javax.swing.JFrame {
                 
                 Instance_hold.getVplay_mon().setExit(true);
                 Instance_hold.getVplay_mon().setIrruptflag(1);
+                
+                try {
+                    Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+                }catch(NullPointerException exc) {
+            
+                }
                 do {
                     System.out.println("VPlay is waiting to exit");
                     try {
@@ -839,7 +846,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jLabel_MainMouseClicked
 
     private void jMenuItem_aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_aboutActionPerformed
-        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.9\n\nDesigned by Robert Mautz");
+        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 1.10\n\nDesigned by Robert Mautz");
     }//GEN-LAST:event_jMenuItem_aboutActionPerformed
 
     private void jMenuItem_exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_exitActionPerformed
@@ -861,6 +868,15 @@ public class MainFrame extends javax.swing.JFrame {
 
             Instance_hold.getVplay_mon().setExit(true);
             Instance_hold.getVplay_mon().setIrruptflag(1);
+            
+            try {
+                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+                //Instance_hold.getPlayframe().getEmpc().getMediaPlayer().release();
+                //Instance_hold.getFsf().getEmpc().getMediaPlayer().release();
+            }catch(NullPointerException exc) {
+            
+            }
             do {
                 System.out.println("VPlay is waiting to exit");
                 try {

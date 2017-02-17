@@ -44,6 +44,8 @@ public class Shell_Out extends Thread{
                     }catch(JSchException exc) {
                         exc.printStackTrace();
                         
+                        //System.out.println("JSCHException");
+                        
                         DownThread dt = new DownThread();
                         dt.start();
                         break;

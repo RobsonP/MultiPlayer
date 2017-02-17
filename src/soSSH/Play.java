@@ -177,6 +177,7 @@ public class Play extends Thread {
                     if (Instance_hold.getVplay_mon().isExit()) {
                         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
                         Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+                        //Instance_hold.getVplay_mon().setStopped(true);
                         //Instance_hold.getSCPFrom_Monitor().setMedreleased(true);
                         System.out.println("BREAKED");
                         break;
@@ -190,8 +191,10 @@ public class Play extends Thread {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
-            }while(!Instance_hold.getVplay_mon().isFinished() && !interrupted);
+                System.out.println("PLAYING");
+                System.out.println("Interrupted: " + interrupted);
+                System.out.println("Is Finished: " + Instance_hold.getVplay_mon().isFinished());
+            }while(!Instance_hold.getVplay_mon().isFinished() && !interrupted/* && !Instance_hold.getVplay_mon().isStopped()*/);
             
             if (Instance_hold.getVplay_mon().isExit()) {
                 i = Instance_hold.getPl().getEntries().size()+1;

@@ -14,6 +14,7 @@ public class Play_Monitor {
             
     public Play_Monitor() {
         exit = false;
+        //stopped = false;
         irruptflag = 0;
     }
     
@@ -47,5 +48,16 @@ public class Play_Monitor {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
-    }   
+    }
+    
+/*
+    public boolean isStopped() {
+        return stopped;
+    }
+
+    public void setStopped(boolean stopped) {
+        this.stopped = stopped;
+    }
+  */  
+    
 }
