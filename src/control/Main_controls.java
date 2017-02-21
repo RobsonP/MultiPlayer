@@ -517,19 +517,9 @@ public class Main_controls {
             String loadfl = Instance_hold.getScpfrom().getMonitor().getDest();
             System.out.println(playfl);
             System.out.println(loadfl);
-                
+            /*    
             Instance_hold.getVplay_mon().setExit(true);
             Instance_hold.getVplay_mon().setIrruptflag(1);
-            /*
-            try {
-                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
-                Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
-                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().release();
-                Instance_hold.getFsf().getEmpc().getMediaPlayer().release();
-            }catch(NullPointerException exc) {
-            
-            }
-            */
 
             do {
                 System.out.println("VPlay is waiting to exit");
@@ -541,13 +531,14 @@ public class Main_controls {
             }while (Instance_hold.getVplay().isAlive());
             Instance_hold.getVplay_mon().setExit(false);
             Instance_hold.getVplay_mon().setIrruptflag(0);
-     
+            */
         }catch(NullPointerException exc) {
             
         }
-
+        
+        /*    
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
-
+        
         if (Instance_hold.getScpfrom().isAlive()) {
             System.out.println("WINDOW CLOSING ACTION");
                 
@@ -570,7 +561,7 @@ public class Main_controls {
 
         }
         System.out.println("SCPFROM: " + Instance_hold.getScpfrom().isAlive());
-        
+        */
         for (int i=0;i<rows.length;i++) {           
             String filename_delete = Instance_hold.getPl().getEntries().get(rows[i]-i).split("/")[Instance_hold.getPl().getEntries().get(rows[i]-i).split("/").length-1];
             filename_delete = filename_delete.replace("\\", "");

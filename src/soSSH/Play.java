@@ -172,7 +172,7 @@ public class Play extends Thread {
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(false);
             do {
                 if (Instance_hold.getVplay_mon().isInterrupted()) {
-                    System.out.println("Interrupted!!!");
+                    System.out.println("VPlay: Interrupted!!!");
 
                     if (Instance_hold.getVplay_mon().isExit()) {
                         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
@@ -192,8 +192,6 @@ public class Play extends Thread {
                     Logger.getLogger(Play.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 System.out.println("PLAYING");
-                System.out.println("Interrupted: " + interrupted);
-                System.out.println("Is Finished: " + Instance_hold.getVplay_mon().isFinished());
             }while(!Instance_hold.getVplay_mon().isFinished() && !interrupted/* && !Instance_hold.getVplay_mon().isStopped()*/);
             
             if (Instance_hold.getVplay_mon().isExit()) {

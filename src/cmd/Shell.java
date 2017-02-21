@@ -95,6 +95,7 @@ public class Shell extends Thread{
         Instance_data.setHostnm(hostnm);
         Instance_data.setPort(port);
         Session session=jsch.getSession(usernm, hostnm, port);
+        session.setTimeout(10000);
         Instance_data.setSession(session);
 
         if (!rsakeyPath.equals("EMPTY")) {

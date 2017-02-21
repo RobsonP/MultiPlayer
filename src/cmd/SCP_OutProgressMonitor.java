@@ -69,7 +69,7 @@ public class SCP_OutProgressMonitor implements SftpProgressMonitor
         if (new String(dest).endsWith("mp3") || new String(dest).endsWith("MP3") || new String(dest).endsWith("wav") || new String(dest).endsWith("WAV")) {
             if (anz16384bytes == 16) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
         }else if (!new String(dest).endsWith("jpg") && !new String(dest).endsWith("JPG")){
-            if (anz16384bytes == 512) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
+            if (anz16384bytes == 256) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
         }
         
         if (Instance_hold.getSCPFrom_Monitor().isClosechannelflag()) {
