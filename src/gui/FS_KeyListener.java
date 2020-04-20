@@ -8,7 +8,8 @@ import instance.Instance_data;
 import instance.Instance_hold;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.ImageIcon;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,12 +35,12 @@ public class FS_KeyListener implements KeyListener{
             while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
                 System.out.println("WAITING TO START PLAYING:::::");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    
+                    Logger.getLogger(FS_KeyListener.class.getName()).log(Level.SEVERE, null, ex);
                 }
             };
-            Instance_hold.getPlayframe().getjLabel_play().setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_pause_small.png")));
+            Instance_hold.getPlayframe().getjLabel_play().setIcon(Instance_hold.getIm_hold().getMcb_grey_pause_small());
             Instance_hold.getMframe().getClistener().setFullscreen(false);
         }
         

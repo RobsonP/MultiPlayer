@@ -1,5 +1,6 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package soSSH;
@@ -16,6 +17,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  *
@@ -28,6 +31,17 @@ public class SoSSH {
      */
     public static void main(String[] args) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         JFrame startupFrame = showStartupWindow();
+        
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+
+        }
         
         File pfad = new File("");
         System.out.println(pfad.getAbsolutePath());
@@ -49,7 +63,8 @@ public class SoSSH {
         
         JFrame frame = new JFrame("Display Image");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setAlwaysOnTop(true);
+        //frame.setAlwaysOnTop(true);
+        frame.toFront();
         
         File pfad = new File("");
         System.out.println(pfad.getAbsolutePath() + "/gui/design/logo_small.jpg");
@@ -66,7 +81,9 @@ public class SoSSH {
         
         panel.add(label);
  
-        frame.setLocation((int)((screenSize.getWidth()/2.0)-(imico.getIconWidth()/2.0)), (int)((screenSize.getHeight()/2.0)-(imico.getIconHeight()/2.0))/*(int)((screenSize.getHeight()/2)-(frame.getHeight()/2))*/);
+        //frame.setLocation((int)((screenSize.getWidth()/2.0)-(imico.getIconWidth()/2.0)), (int)((screenSize.getHeight()/2.0)-(imico.getIconHeight()/2.0))/*(int)((screenSize.getHeight()/2)-(frame.getHeight()/2))*/);
+        frame.setLocationRelativeTo(null);
+        frame.setLocation((int)frame.getLocation().getX()-(int)(imico.getIconWidth()/2.0), (int)frame.getLocation().getY()-(int)(imico.getIconHeight()/2.0));
         frame.setUndecorated(true);
         frame.pack();
         frame.setVisible(true);
@@ -74,3 +91,4 @@ public class SoSSH {
         return frame;
     }
 }
+

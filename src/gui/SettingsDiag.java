@@ -6,13 +6,20 @@ package gui;
 
 import instance.Instance_data;
 import instance.Instance_hold;
+import java.awt.Event;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -30,13 +37,15 @@ public class SettingsDiag extends JDialog {
         this.setTitle("Settings");
         this.setVisible(false);
         this.setIconImage(new ImageIcon(getClass().getResource("/gui/design/logo_small.jpg")).getImage());
-        this.setLocation((int)Instance_hold.getMframe().getLocation().getX()+(int)(Instance_hold.getMframe().getSize().getWidth()/3), (int)Instance_hold.getMframe().getLocation().getY()+(int)(Instance_hold.getMframe().getSize().getHeight()/4));
+        this.setLocation((int)Instance_hold.getMframe().getLocation().getX()+(int)(Instance_hold.getMframe().getSize().getWidth()/3), (int)Instance_hold.getMframe().getLocation().getY()+(int)(Instance_hold.getMframe().getSize().getHeight()/5));
 
         TitledBorder title;
         title = BorderFactory.createTitledBorder("Optional");
         this.jPanel_optional.setBorder(title);
+    
+        this.getRootPane().setDefaultButton(jButton_ok);
     }
-
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -63,11 +72,28 @@ public class SettingsDiag extends JDialog {
         jTextField_RSA = new javax.swing.JTextField();
         jButton_browse_keyfile = new javax.swing.JButton();
         jLabel_keyfile_desc = new javax.swing.JLabel();
-        jButton_save = new javax.swing.JButton();
+        jButton_ok = new javax.swing.JButton();
         jButton_import = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        KeyStroke keyExport = KeyStroke.getKeyStroke(KeyEvent.VK_E, Event.ALT_MASK);
+        Action performExport = new AbstractAction("Export") {
+            public void actionPerformed(ActionEvent e) {
+                //do your save
+                JFileChooser fc = new JFileChooser();
+                fc.setVisible(true);
+                FC_sav_Listener listener = new FC_sav_Listener();
+                listener.setJfc(fc);
+                fc.addActionListener(listener);
+                fc.showSaveDialog(Instance_hold.getSetframe());
+            }
+        };
+
+        jButton_export.getActionMap().put("performExport", performExport);
+        jButton_export.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyExport, "performExport");
+
+        jButton_export.setMnemonic('E');
         jButton_export.setText("Export");
         jButton_export.setName("sssec"); // NOI18N
         jButton_export.addActionListener(new java.awt.event.ActionListener() {
@@ -134,13 +160,31 @@ public class SettingsDiag extends JDialog {
                     .addComponent(jLabel_keyfile_desc)))
         );
 
-        jButton_save.setText("Save");
-        jButton_save.addActionListener(new java.awt.event.ActionListener() {
+        jButton_ok.setText("OK");
+        jButton_ok.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_saveActionPerformed(evt);
+                jButton_okActionPerformed(evt);
             }
         });
 
+        KeyStroke keyImport = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK);
+        Action performImport = new AbstractAction("Import") {
+            public void actionPerformed(ActionEvent e) {
+                //do your save
+                JFileChooser fc = new JFileChooser();
+                fc.setVisible(true);
+                FC_load_Listener listener = new FC_load_Listener();
+                listener.setJfc(fc);
+                listener.setSetdiag(Instance_hold.getSetframe());
+                fc.addActionListener(listener);
+                fc.showOpenDialog(Instance_hold.getSetframe());
+            }
+        };
+
+        jButton_import.getActionMap().put("performImport", performImport);
+        jButton_import.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyImport, "performImport");
+
+        jButton_import.setMnemonic('I');
         jButton_import.setText("Import");
         jButton_import.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,13 +212,14 @@ public class SettingsDiag extends JDialog {
                             .addGroup(jPanel_SettingsLayout.createSequentialGroup()
                                 .addComponent(jLabel_server)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTextField_server)
-                                .addGap(18, 18, 18))
+                                .addComponent(jTextField_server, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                             .addGroup(jPanel_SettingsLayout.createSequentialGroup()
-                                .addComponent(jButton_save, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
+                                .addComponent(jButton_ok, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton_cancel)
-                                .addGap(200, 200, 200)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel_SettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton_export, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jButton_import, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -213,7 +258,7 @@ public class SettingsDiag extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel_SettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton_export)
-                    .addComponent(jButton_save)
+                    .addComponent(jButton_ok)
                     .addComponent(jButton_cancel))
                 .addContainerGap(59, Short.MAX_VALUE))
             .addGroup(jPanel_SettingsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -271,9 +316,15 @@ public class SettingsDiag extends JDialog {
         this.dispose();
     }//GEN-LAST:event_jButton_cancelActionPerformed
 
-    private void jButton_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_saveActionPerformed
+    private void jButton_okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_okActionPerformed
         Instance_data.setUname(this.jTextField_uname.getText());
-        Instance_data.setRsakeyPath(this.jTextField_RSA.getText());
+        
+        if (this.jTextField_RSA.getText().equals("")) {
+            Instance_data.setRsakeyPath("EMPTY");
+        } else {
+            Instance_data.setRsakeyPath(this.jTextField_RSA.getText());
+        }
+        
         Instance_data.setTmpPath(this.jTextField_tmp.getText());
         Instance_hold.getMframe().getjTextField_Server().setText(this.jTextField_server.getText());
         
@@ -285,8 +336,10 @@ public class SettingsDiag extends JDialog {
         
         this.setVisible(false);
         Instance_hold.getMframe().getjButton_connect().setEnabled(true);
+        Instance_hold.getMframe().getjTextField_Server().setEnabled(true);
+            Instance_hold.getMframe().getjTextField_Port().setEnabled(true);
         JOptionPane.showMessageDialog(null, "Settings loaded");
-    }//GEN-LAST:event_jButton_saveActionPerformed
+    }//GEN-LAST:event_jButton_okActionPerformed
 
     private void jButton_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_importActionPerformed
         JFileChooser fc = new JFileChooser();
@@ -345,13 +398,19 @@ public class SettingsDiag extends JDialog {
     public JButton getjButton_import() {
         return jButton_import;
     } 
+
+    public JButton getjButton_ok() {
+        return jButton_ok;
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_browse_keyfile;
     private javax.swing.JButton jButton_browse_tmp;
     private javax.swing.JButton jButton_cancel;
     private javax.swing.JButton jButton_export;
     private javax.swing.JButton jButton_import;
-    private javax.swing.JButton jButton_save;
+    private javax.swing.JButton jButton_ok;
     private javax.swing.JLabel jLabel_RSA;
     private javax.swing.JLabel jLabel_keyfile_desc;
     private javax.swing.JLabel jLabel_port;

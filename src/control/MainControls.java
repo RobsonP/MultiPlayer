@@ -10,7 +10,6 @@ import instance.Instance_hold;
 import data.Node_entry;
 import data.Playlist;
 import cmd.ConnectThread;
-import gui.MainFrame;
 import gui.MessageThread;
 import java.io.File;
 import java.util.ArrayList;
@@ -28,42 +27,37 @@ import parse.ParseControl;
  *
  * @author RobsonP
  */
-public class Main_controls {    
+public class MainControls {    
     
-    public static void jTreeWillExpand(javax.swing.event.TreeExpansionEvent evt) {                   
-        System.out.println("TEST");
-        
-        try {
-            Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
-            Instance_hold.getSh_mon().setLoading(true);
-            String strpath;
-            ArrayList<Node_entry> nodelist;
-                        
-            strpath = ParseControl.parsePath(evt.getPath().toString());
-            
-            Instance_data.setCmd(strpath);
-            Instance_hold.getSh_mon().setWrite_output(true);
-                    
-            while(Instance_hold.getSh_mon().isWrite_output())Thread.sleep(100);
-            
-            String[] strlist = Instance_data.getDirbuf().toString().split("\n");
-                
-            nodelist = ParseControl.parseInput(strlist);
-            
-            Instance_hold.getMframe().getjTextPane_info().setText(Instance_hold.getMframe().getPathfromTree(evt.getPath().toString()).toString());
-
-            List<Node_entry> list = Comparator.sortList(nodelist);;
-            
-            for (int i=0;i<list.size();i++) {
-                System.out.println("new: " + list.get(i).getName());
+    public static void expand_NavTree(javax.swing.event.TreeExpansionEvent evt) {                   
+        Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
+        Instance_hold.getSh_mon().setLoading(true);
+        String strpath;
+        ArrayList<Node_entry> nodelist;
+        strpath = ParseControl.parsePath(evt.getPath().toString());
+        Instance_data.setCmd(strpath);
+        Instance_hold.getSh_mon().setWrite_output(true);
+        while(Instance_hold.getSh_mon().isWrite_output()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            Instance_hold.getMframe().addNodestoBranch(list, evt.getPath());
-            
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        String[] strlist = Instance_data.getDirbuf().toString().split("\n");
+        nodelist = ParseControl.parseInput(strlist);
+        Instance_hold.getMframe().getjTextPane_info().setText(Instance_hold.getMframe().getPathfromTree(evt.getPath().toString()).toString());
+        List<Node_entry> list = Comparator.sortList(nodelist);
+        
+        
+        for (int i=0;i<list.size();i++) {
+            System.out.println("Folder Entry: " + list.get(i).getName());
+        }
+        
+        Instance_hold.getMframe().addNodestoBranch(list, evt.getPath());
+        DefaultMutableTreeNode dtm_test = (DefaultMutableTreeNode)evt.getPath().getLastPathComponent();
+        System.out.println("Element Path: " + dtm_test.toString());
+        System.out.println("Number of Elements " + dtm_test.getChildCount());
     }
     
     public static void connect() {  
@@ -77,23 +71,21 @@ public class Main_controls {
     public static void addToPlaylist() {
         Instance_hold.getSCPFrom_Monitor().setDlfinish(false);
         for (int j=0;j<Instance_hold.getMframe().getjTree_nav().getSelectionCount();j++) {
-        
-        Instance_hold.getMframe().setMedpath(Instance_hold.getMframe().getPathfromTree(Instance_hold.getMframe().getjTree_nav().getSelectionPaths()[j].toString()));
+            Instance_hold.getMframe().setMedpath(Instance_hold.getMframe().getPathfromTree(Instance_hold.getMframe().getjTree_nav().getSelectionPaths()[j].toString()));
 
-        TreeNode tn = (TreeNode)Instance_hold.getMframe().getjTree_nav().getSelectionPaths()[j].getLastPathComponent();
+            TreeNode tn = (TreeNode)Instance_hold.getMframe().getjTree_nav().getSelectionPaths()[j].getLastPathComponent();
 
-        if (tn.getChildCount() == 0) {
-            Instance_hold.getPl().addentry(Instance_hold.getMframe().getMedpath());
-            Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
-            Vector<String> v = new Vector<String>();
-            v.addElement(Instance_hold.getMframe().getMedpath().toString().split("/")[Instance_hold.getMframe().getMedpath().toString().split("/").length-1].replace("\\", ""));
-            Instance_hold.getMframe().getDtm().addRow(v);
-        }
-        else {        
-            Instance_hold.setMthread(new MessageThread("No Directories Allowed"));
-            Instance_hold.getMthread().start();
-        }        
-
+            if (tn.getChildCount() == 0) {
+                Instance_hold.getPl().addEntry(Instance_hold.getMframe().getMedpath());
+                Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
+                Vector<String> v = new Vector<String>();
+                v.addElement(Instance_hold.getMframe().getMedpath().toString().split("/")[Instance_hold.getMframe().getMedpath().toString().split("/").length-1].replace("\\", ""));
+                Instance_hold.getMframe().getDtm().addRow(v);
+            }
+            else {        
+                Instance_hold.setMthread(new MessageThread("No Directories Allowed"));
+                Instance_hold.getMthread().start();
+            }        
         }
     }
     
@@ -104,34 +96,40 @@ public class Main_controls {
         
         Instance_hold.getVplay_mon().setExit(true);
         Instance_hold.getVplay_mon().setIrruptflag(1);
-        do {
-            System.out.println("VPlay is waiting to exit");
+
+        System.out.println("Main Controls: Waiting for VPlay release...");
+        do { 
+            Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while (Instance_hold.getVplay().isAlive());
+        }while (Instance_hold.getPlay().isAlive());
         Instance_hold.getVplay_mon().setExit(false);
         Instance_hold.getVplay_mon().setIrruptflag(0);
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
                 
         Instance_hold.getSCPFrom_Monitor().setExit(true);
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
 
         if (Instance_hold.getScpfrom().isAlive()) {
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-            do{
-                    System.out.println("waiting for SCP release");
+            
+            System.out.println("Main Controls: Waiting for SCP release...");
+            do {
+                Instance_hold.getMframe().getjLabel_show_status().setText("SFTP Release...");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }while(Instance_hold.getScpfrom().isAlive());
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
             
             Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
             Instance_hold.getSCPFrom_Monitor().setExit(false);
+            Instance_hold.getMframe().getjLabel_show_status().setText("");
         }
 
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
@@ -149,10 +147,10 @@ public class Main_controls {
             Instance_hold.getPlayframe().init();       
         }
 
-        if (!Instance_hold.getVplay().isAlive()) {
-            System.out.println("IVE STARTED VPLAY");
+        if (!Instance_hold.getPlay().isAlive()) {
+            System.out.println("VPLAY STARTED");
             Instance_hold.create_VPlay();
-            Instance_hold.getVplay().start();
+            Instance_hold.getPlay().start();
         }
         else {
             System.out.println("Media Player must be started otherwise!!!");
@@ -168,34 +166,40 @@ public class Main_controls {
         
         Instance_hold.getVplay_mon().setExit(true);
         Instance_hold.getVplay_mon().setIrruptflag(1);
+
+        System.out.println("Main Controls: Waiting for VPlay release...");
         do {
-            System.out.println("VPlay is waiting to exit");
+            Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while (Instance_hold.getVplay().isAlive());
+        }while (Instance_hold.getPlay().isAlive());
         Instance_hold.getVplay_mon().setExit(false);
         Instance_hold.getVplay_mon().setIrruptflag(0);
-
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
+        
         Instance_hold.getSCPFrom_Monitor().setExit(true);
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
 
         if (Instance_hold.getScpfrom().isAlive()) {
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-            do{
-                    System.out.println("waiting for SCP release");
+            
+            System.out.println("Main Controls: Waiting for SCP release...");
+            do {
+                Instance_hold.getMframe().getjLabel_show_status().setText("SFTP Release...");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }while(Instance_hold.getScpfrom().isAlive());
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
             
             Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
             Instance_hold.getSCPFrom_Monitor().setExit(false);
+            Instance_hold.getMframe().getjLabel_show_status().setText("");
         }
 
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
@@ -213,10 +217,10 @@ public class Main_controls {
             Instance_hold.getPlayframe().init();       
         }
 
-        if (!Instance_hold.getVplay().isAlive()) {
-            System.out.println("IVE STARTED VPLAY");
+        if (!Instance_hold.getPlay().isAlive()) {
+            System.out.println("VPLAY STARTED");
             Instance_hold.create_VPlay();
-            Instance_hold.getVplay().start();
+            Instance_hold.getPlay().start();
         }
         else {
             System.out.println("Media Player must be started otherwise!!!");
@@ -231,37 +235,50 @@ public class Main_controls {
         
         Instance_hold.getVplay_mon().setExit(true);
         Instance_hold.getVplay_mon().setIrruptflag(1);
+        
+        try {
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+            Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+        }catch(NullPointerException exc) {
+            
+        }
+        
+        System.out.println("Main Controls: Waiting for VPlay release...");
         do {
-            System.out.println("VPlay is waiting to exit");
+            Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while (Instance_hold.getVplay().isAlive());
-                
+        }while (Instance_hold.getPlay().isAlive());
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
+        
         Instance_hold.getSCPFrom_Monitor().setExit(true);
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
         if (Instance_hold.getScpfrom().isAlive()) {
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-            do{
-                    System.out.println("waiting for SCP release");
+            
+            System.out.println("Main Controls: Waiting for SCP release...");
+            do {
+                Instance_hold.getMframe().getjLabel_show_status().setText("SFTP Release...");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }while(Instance_hold.getScpfrom().isAlive());
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
+            Instance_hold.getMframe().getjLabel_show_status().setText("");
         }   
 
         Instance_hold.getSh_mon().setExit(true);            
         while (Instance_hold.getSh().isAlive()) {
-            System.out.println("WAITING FOR SHELL EXIT");
+            System.out.println("Main Controls: Waiting for Shell release...");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
@@ -295,7 +312,7 @@ public class Main_controls {
  
         if (Instance_data.getTmpPath() != null) {
             File file = new File(Instance_data.getTmpPath());
-            Main_controls.del(file);
+            del(file);
 
             do {
                 crdir = file.mkdirs();
@@ -310,6 +327,9 @@ public class Main_controls {
         Instance_hold.getMframe().getTop().removeFromParent();
         Instance_hold.getMframe().setTop(new DefaultMutableTreeNode("/"));
         Instance_hold.getMframe().getjTextPane_info().setText("/");
+        Instance_hold.getMframe().getjTextField_Server().setEnabled(true);
+        Instance_hold.getMframe().getjTextField_Port().setEnabled(true);
+        Instance_hold.getMframe().getjTextPane_info().setEditable(true);
 
         Instance_hold.setPl(new Playlist());
         try {
@@ -332,9 +352,12 @@ public class Main_controls {
         Instance_hold.getMframe().getjProgressBar_SCP().setValue(0);
         Instance_hold.getMframe().getjLabel_src().setText("");
         Instance_hold.getMframe().getjLabel_speedval().setText("");
-        //Instance_hold.getMframe().getContentPane().repaint();
+        Instance_hold.getMframe().getjLabel_show_flnm().setText("");
         Instance_hold.getMframe().getjButton_connect().setEnabled(false);
+        Instance_data.setPlLoadEnabled(false);
         Instance_hold.getSetframe().getjButton_import().setEnabled(true);
+        Instance_hold.getSetframe().getjButton_ok().setEnabled(true);
+        Instance_hold.getSetframe().getRootPane().setDefaultButton(Instance_hold.getSetframe().getjButton_ok());
     }
     
     public static void playMedia() {
@@ -342,39 +365,51 @@ public class Main_controls {
 
         System.out.println("PLAY MEDIA ACTION");
         
+        System.out.println("Main Controls: Waiting for VPlay release...");
+        
         Instance_hold.getVplay_mon().setExit(true);
         Instance_hold.getVplay_mon().setIrruptflag(1);
         do {
-            System.out.println("VPlay is waiting to exit");
+            Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while (Instance_hold.getVplay().isAlive());
+        }while (Instance_hold.getPlay().isAlive());
         Instance_hold.getVplay_mon().setExit(false);
         Instance_hold.getVplay_mon().setIrruptflag(0);
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
 
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
         Instance_hold.getSCPFrom_Monitor().setExit(true);
 
         Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-        do{
-            System.out.println("waiting for SCP release");
+        
+        System.out.println("Main Controls: Waiting for SCP release...");
+        do {
+            Instance_hold.getMframe().getjLabel_show_status().setText("SFTP Release...");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(MainControls.class.getName()).log(Level.SEVERE, null, ex);
             }
         }while(Instance_hold.getScpfrom().isAlive());
         Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
 
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
         Instance_hold.getSCPFrom_Monitor().setExit(false);
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
        
         Instance_data.setDlindx(Instance_hold.getMframe().getjTable_playlist().getSelectedRow());
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
         Instance_hold.getMframe().setFlnm(Instance_hold.getPl().getEntries().get(Instance_hold.getMframe().getjTable_playlist().getSelectedRow()).toString().split("/")[Instance_hold.getPl().getEntries().get(Instance_hold.getMframe().getjTable_playlist().getSelectedRow()).toString().split("/").length-1].replace("\\", ""));
+        
+        if (Instance_hold.getMframe().getFlnm().length() <= 70) {
+            Instance_hold.getPlayframe().getjLabel_show_flnm().setText(Instance_hold.getMframe().getFlnm());
+        }else {
+            Instance_hold.getPlayframe().getjLabel_show_flnm().setText(Instance_hold.getMframe().getFlnm().substring(0, 70) + "...");
+        }
 
         if (!Instance_hold.getScpfrom().isAlive()) {
             Instance_hold.setScpfrom(new SCP());
@@ -388,10 +423,10 @@ public class Main_controls {
             Instance_hold.getPlayframe().init();       
         }
 
-        if (!Instance_hold.getVplay().isAlive()) {
-            System.out.println("IVE STARTED VPLAY");
+        if (!Instance_hold.getPlay().isAlive()) {
+            System.out.println("VPLAY STARTED");
             Instance_hold.create_VPlay();
-            Instance_hold.getVplay().start();
+            Instance_hold.getPlay().start();
         }        
     }
     
@@ -400,34 +435,38 @@ public class Main_controls {
         int[] i = Instance_hold.getMframe().getjTable_playlist().getSelectedRows();
         String plentry;
         
-        if (i[0]-1 == Instance_data.getCurrentplay()) {
-            Instance_data.setCurrentplay(i[i.length-1]);
-        }
-        else if (Instance_data.getCurrentplay()>=i[0] && Instance_data.getCurrentplay()<=i[i.length-1] && Instance_data.getCurrentplay() != 0) {
-            Instance_data.setCurrentplay(Instance_data.getCurrentplay()-1);
-        }
-        
-        Instance_hold.getVplay().setI(Instance_data.getCurrentplay());
-        
-        if (i[0]>0) {
-            for(int j=0;j<i.length;j++) {
-                plentry = Instance_hold.getPl().getEntries().get(i[j]);
-                Instance_hold.getPl().getEntries().remove(i[j]);
-                Instance_hold.getPl().getEntries().add(i[j]-1, plentry);
+        try {
+            if (i[0]-1 == Instance_data.getCurrentplay()) {
+                Instance_data.setCurrentplay(i[i.length-1]);
+            }
+            else if (Instance_data.getCurrentplay()>=i[0] && Instance_data.getCurrentplay()<=i[i.length-1] && Instance_data.getCurrentplay() != 0) {
+                Instance_data.setCurrentplay(Instance_data.getCurrentplay()-1);
             }
 
-            Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
+            Instance_hold.getPlay().setI(Instance_data.getCurrentplay());
 
-            for (int j=0;j<rowcount;j++) Instance_hold.getMframe().getDtm().removeRow(0);
+            if (i[0]>0) {
+                for(int j=0;j<i.length;j++) {
+                    plentry = Instance_hold.getPl().getEntries().get(i[j]);
+                    Instance_hold.getPl().getEntries().remove(i[j]);
+                    Instance_hold.getPl().getEntries().add(i[j]-1, plentry);
+                }
 
-            for (int j=0;j<Instance_hold.getPl().getEntries().size();j++) {
-                String medpath = Instance_hold.getPl().getEntries().get(j);
-                Vector<String> v = new Vector<String>();
-                v.addElement(medpath.toString().split("/")[medpath.toString().split("/").length-1].replace("\\", ""));
-                Instance_hold.getMframe().getDtm().addRow(v);
+                Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
+
+                for (int j=0;j<rowcount;j++) Instance_hold.getMframe().getDtm().removeRow(0);
+
+                for (int j=0;j<Instance_hold.getPl().getEntries().size();j++) {
+                    String medpath = Instance_hold.getPl().getEntries().get(j);
+                    Vector<String> v = new Vector<String>();
+                    v.addElement(medpath.toString().split("/")[medpath.toString().split("/").length-1].replace("\\", ""));
+                    Instance_hold.getMframe().getDtm().addRow(v);
+                }
+
+                Instance_hold.getMframe().getjTable_playlist().getSelectionModel().setSelectionInterval(i[0]-1, i[i.length-1]-1);
             }
-
-            Instance_hold.getMframe().getjTable_playlist().getSelectionModel().setSelectionInterval(i[0]-1, i[i.length-1]-1);
+        }catch(ArrayIndexOutOfBoundsException ex) {
+            
         }
     }
     
@@ -436,34 +475,39 @@ public class Main_controls {
         int[] i = Instance_hold.getMframe().getjTable_playlist().getSelectedRows();
         String plentry;
         
-        if (i[i.length-1]+1 == Instance_data.getCurrentplay()) {
-            Instance_data.setCurrentplay(i[0]);
-        }
-        else if (Instance_data.getCurrentplay()>=i[0] && Instance_data.getCurrentplay()<=i[i.length-1] && Instance_data.getCurrentplay() != Instance_hold.getPl().getEntries().size()-1) {
-            Instance_data.setCurrentplay(Instance_data.getCurrentplay()+1);
-        }
-        
-        Instance_hold.getVplay().setI(Instance_data.getCurrentplay());
-        
-        if (i[i.length-1]<Instance_hold.getPl().getEntries().size()-1) {
-            for(int j=i.length-1;j>=0;j--) {
-                plentry = Instance_hold.getPl().getEntries().get(i[j]);
-                Instance_hold.getPl().getEntries().remove(i[j]);
-                Instance_hold.getPl().getEntries().add(i[j]+1, plentry);
+        try {
+            if (i[i.length-1]+1 == Instance_data.getCurrentplay()) {
+                Instance_data.setCurrentplay(i[0]);
             }
-
-            Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
-
-            for (int j=0;j<rowcount;j++) Instance_hold.getMframe().getDtm().removeRow(0);
-
-            for (int j=0;j<Instance_hold.getPl().getEntries().size();j++) {
-                String medpath = Instance_hold.getPl().getEntries().get(j);
-                Vector<String> v = new Vector<String>();
-                v.addElement(medpath.toString().split("/")[medpath.toString().split("/").length-1].replace("\\", ""));
-                Instance_hold.getMframe().getDtm().addRow(v);
+            else if (Instance_data.getCurrentplay()>=i[0] && Instance_data.getCurrentplay()<=i[i.length-1] && Instance_data.getCurrentplay() != Instance_hold.getPl().getEntries().size()-1) {
+                Instance_data.setCurrentplay(Instance_data.getCurrentplay()+1);
             }
+        
+        
+            Instance_hold.getPlay().setI(Instance_data.getCurrentplay());
 
-            Instance_hold.getMframe().getjTable_playlist().getSelectionModel().setSelectionInterval(i[0]+1, i[i.length-1]+1);   
+            if (i[i.length-1]<Instance_hold.getPl().getEntries().size()-1) {
+                for(int j=i.length-1;j>=0;j--) {
+                    plentry = Instance_hold.getPl().getEntries().get(i[j]);
+                    Instance_hold.getPl().getEntries().remove(i[j]);
+                    Instance_hold.getPl().getEntries().add(i[j]+1, plentry);
+                }
+
+                Instance_hold.getMframe().setDtm((DefaultTableModel)Instance_hold.getMframe().getjTable_playlist().getModel());
+
+                for (int j=0;j<rowcount;j++) Instance_hold.getMframe().getDtm().removeRow(0);
+
+                for (int j=0;j<Instance_hold.getPl().getEntries().size();j++) {
+                    String medpath = Instance_hold.getPl().getEntries().get(j);
+                    Vector<String> v = new Vector<String>();
+                    v.addElement(medpath.toString().split("/")[medpath.toString().split("/").length-1].replace("\\", ""));
+                    Instance_hold.getMframe().getDtm().addRow(v);
+                }
+
+                Instance_hold.getMframe().getjTable_playlist().getSelectionModel().setSelectionInterval(i[0]+1, i[i.length-1]+1);   
+            }
+        }catch(ArrayIndexOutOfBoundsException ex) {
+            
         }
     }
     
@@ -473,52 +517,13 @@ public class Main_controls {
         int[] rows = Instance_hold.getMframe().getjTable_playlist().getSelectedRows();
         
         try {
-            String playfl = Instance_data.getTmpPath() + "\\" + Instance_hold.getVplay().getFlnm();
+            String playfl = Instance_data.getTmpPath() + "\\" + Instance_hold.getPlay().getFlnm();
             String loadfl = Instance_hold.getScpfrom().getMonitor().getDest();
             System.out.println(playfl);
             System.out.println(loadfl);
-                
-            Instance_hold.getVplay_mon().setExit(true);
-            Instance_hold.getVplay_mon().setIrruptflag(1);
-            do {
-                System.out.println("VPlay is waiting to exit");
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }while (Instance_hold.getVplay().isAlive());
-            Instance_hold.getVplay_mon().setExit(false);
-            Instance_hold.getVplay_mon().setIrruptflag(0);
-     
         }catch(NullPointerException exc) {
             
         }
-
-        Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
-
-        if (Instance_hold.getScpfrom().isAlive()) {
-            System.out.println("WINDOW CLOSING ACTION");
-                
-            Instance_hold.getSCPFrom_Monitor().setExit(true);
-            Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
-            if (Instance_hold.getScpfrom().isAlive()) {
-                Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-                do{
-                        System.out.println("waiting for SCP release");
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }while(Instance_hold.getScpfrom().isAlive());
-                Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
-            }
-            Instance_hold.getSCPFrom_Monitor().setIrruptflag(0);
-            Instance_hold.getSCPFrom_Monitor().setExit(false);
-
-        }
-        System.out.println("SCPFROM: " + Instance_hold.getScpfrom().isAlive());
         
         for (int i=0;i<rows.length;i++) {           
             String filename_delete = Instance_hold.getPl().getEntries().get(rows[i]-i).split("/")[Instance_hold.getPl().getEntries().get(rows[i]-i).split("/").length-1];
@@ -537,12 +542,16 @@ public class Main_controls {
             if (rows[i]-i<Instance_data.getCurrentplay()) Instance_data.setCurrentplay(Instance_data.getCurrentplay()-1);
             else if (rows[i]-i==Instance_data.getCurrentplay()) Instance_data.setCurrentplay(-1);
         }
-        
-        if (rows[rows.length-1]<Instance_hold.getVplay().getI()) Instance_hold.getVplay().setI(Instance_hold.getVplay().getI()-rows.length);
-        else if (rows[0]<=Instance_hold.getVplay().getI() && rows[rows.length-1]>=Instance_hold.getVplay().getI()) Instance_hold.getVplay().setI(0);
+
+        try {
+            if (rows[rows.length-1]<Instance_hold.getPlay().getI()) Instance_hold.getPlay().setI(Instance_hold.getPlay().getI()-rows.length);
+            else if (rows[0]<=Instance_hold.getPlay().getI() && rows[rows.length-1]>=Instance_hold.getPlay().getI()) Instance_hold.getPlay().setI(0);
+        }catch(ArrayIndexOutOfBoundsException ex) {
+            
+        }
     }
     
-        public static boolean del(File dir){
+    public static boolean del(File dir){
         if (dir.isDirectory()){
                 String[] entries = dir.list();
                 for (int x=0;x<entries.length;x++){
@@ -562,7 +571,7 @@ public class Main_controls {
             }
     } 
         
-    public static boolean deltreefiles(File dir) {
+    public boolean deltreefiles(File dir) {
         String[] entries = dir.list();
 
         for (int x=0;x<entries.length;x++){

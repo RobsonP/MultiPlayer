@@ -12,7 +12,7 @@ import java.util.Comparator;
  * @author RobsonP
  */
 public class NodeComparator implements Comparator<Node_entry> {
-
+    
     @Override
     public int compare(Node_entry o1, Node_entry o2) {
         if (o1.getType() == 'd' && o2.getType() == 'n') return 1;

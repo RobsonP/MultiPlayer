@@ -10,6 +10,7 @@
  */
 package gui;
 
+import soSSH.MPlayer_EventListener;
 import instance.Instance_hold;
 import javax.swing.JPanel;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
@@ -30,7 +31,7 @@ public class FullScreenFrame extends javax.swing.JFrame {
     public FullScreenFrame() {
         initComponents();       
         
-        this.setIconImage(Instance_hold.getIm_hold().getNeu12());
+        this.setIconImage(Instance_hold.getIm_hold().getLogo_small());
         
         this.addKeyListener(mkl);
                 

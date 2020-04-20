@@ -31,6 +31,7 @@ public class Instance_data {
     private static String[] cpystr;
     private static int port;
     private static int lastout;
+    private static int showflnm_size = 30;
     private static long media_time;
     private static long media_length;
     private static StringBuffer dirbuf = new StringBuffer("");
@@ -45,6 +46,8 @@ public class Instance_data {
     private static Session session;
     private static JSch jsch;
     private static UserInfo ui;
+    private static boolean skip;
+    private static boolean plLoadEnabled = false;
     
 
     public synchronized static String getPw() {
@@ -251,11 +254,35 @@ public class Instance_data {
         Instance_data.ui = ui;
     }
 
-    public static String getLs() {
+    public synchronized static String getLs() {
         return ls;
     }
 
-    public static void setLs(String ls) {
+    public synchronized static void setLs(String ls) {
         Instance_data.ls = ls;
     } 
+
+    public synchronized static int getShowflnm_size() {
+        return showflnm_size;
+    }
+
+    public synchronized static void setShowflnm_size(int showflnm_size) {
+        Instance_data.showflnm_size = showflnm_size;
+    }
+
+    public synchronized static boolean isSkip() {
+        return skip;
+    }
+
+    public synchronized static void setSkip(boolean skip) {
+        Instance_data.skip = skip;
+    }
+
+    public static boolean isPlLoadEnabled() {
+        return plLoadEnabled;
+    }
+
+    public static void setPlLoadEnabled(boolean plLoadEnabled) {
+        Instance_data.plLoadEnabled = plLoadEnabled;
+    }   
 }

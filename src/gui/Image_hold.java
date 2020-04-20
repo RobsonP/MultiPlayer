@@ -12,7 +12,7 @@ import javax.swing.ImageIcon;
  * @author RobsonP
  */
 public class Image_hold {
-    public Image neu12 = new ImageIcon(getClass().getResource("/gui/design/logo_small.jpg")).getImage();
+    public Image logo_small = new ImageIcon(getClass().getResource("/gui/design/logo_small.jpg")).getImage();
     public ImageIcon mcb_blue_prev_small = new ImageIcon(getClass().getResource("/gui/design/mcb_blue_prev_small.png"));
     public ImageIcon mcb_blue_play_small = new ImageIcon(getClass().getResource("/gui/design/mcb_blue_play_small.png"));
     public ImageIcon mcb_blue_pause_small = new ImageIcon(getClass().getResource("/gui/design/mcb_blue_pause_small.png"));
@@ -28,9 +28,9 @@ public class Image_hold {
     public ImageIcon mcb_green_pause_small = new ImageIcon(getClass().getResource("/gui/design/mcb_green_pause_small.png"));
     public ImageIcon mcb_green_stop_small = new ImageIcon(getClass().getResource("/gui/design/mcb_green_stop_small.png"));
     public ImageIcon mcb_green_fwd_small = new ImageIcon(getClass().getResource("/gui/design/mcb_green_fwd_small.png"));
-    
-    public Image getNeu12() {
-        return neu12;
+
+    public Image getLogo_small() {
+        return logo_small;
     }
 
     public ImageIcon getMcb_blue_prev_small() {
@@ -41,7 +41,7 @@ public class Image_hold {
         return mcb_grey_prev_small;
     }
 
-    public ImageIcon getMcb_green_prev_small() {
+    public ImageIcon getMcb_green_prev_small() {       
         return mcb_green_prev_small;
     }
 

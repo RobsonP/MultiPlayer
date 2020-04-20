@@ -12,7 +12,7 @@ import java.awt.event.ComponentListener;
  *
  * @author RobsonP
  */
-public class MyComponentListener implements ComponentListener{
+public class MyComponentListener implements ComponentListener {
 
     private boolean vplay, fullscreen;
     
@@ -28,13 +28,9 @@ public class MyComponentListener implements ComponentListener{
 
     @Override
     public void componentMoved(ComponentEvent e) {
-        System.out.println("MOVED");
-        System.out.println("fullscreen? " + fullscreen);
         if (!fullscreen && !vplay) {
-            System.out.println("LOCATED");
-            Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+200, (int)Instance_hold.getMframe().getLocation().getY()+80);
+            Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+178, (int)Instance_hold.getMframe().getLocation().getY()+75);
         }
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

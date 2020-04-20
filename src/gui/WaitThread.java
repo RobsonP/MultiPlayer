@@ -20,14 +20,15 @@ public class WaitThread extends Thread {
     
     @Override
     public void run() {
-        while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getMframe().interrupted && Instance_hold.getVplay().isAlive()) {
+        while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getMframe().interrupted && Instance_hold.getPlay().isAlive()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(WaitThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-             
-        Instance_hold.getMframe().setEnabled(true);
+
+        Instance_hold.getMframe().enable_Objects();
+        Instance_hold.getMframe().getjButton_reset().setVisible(false);
     }
 }

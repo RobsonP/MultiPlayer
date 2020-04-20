@@ -4,7 +4,7 @@
  */
 package cmd;
 
-import control.Main_controls;
+import control.MainControls;
 import data.Playlist;
 import instance.Instance_data;
 import instance.Instance_hold;
@@ -28,38 +28,43 @@ public class DownThread extends Thread {
     public void run() {
         boolean crdir = false;
         System.out.println("DOWN THREAD ACTION");
-        
         Instance_hold.getVplay_mon().setExit(true);
         Instance_hold.getVplay_mon().setIrruptflag(1);
+
+        System.out.println("Down Thread: Waiting for VPlay release...");
         do {
-            System.out.println("VPlay is waiting to exit");
+            Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DownThread.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }while (Instance_hold.getVplay().isAlive());
-                
+        }while (Instance_hold.getPlay().isAlive());
+        Instance_hold.getMframe().getjLabel_show_status().setText("");
+        
         Instance_hold.getSCPFrom_Monitor().setExit(true);
         Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
 
         if (Instance_hold.getScpfrom().isAlive()) {
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(true);
-            do{
-                    System.out.println("waiting for SCP release");
+            
+            System.out.println("Down Thread: Waiting for SCP release...");
+            do { 
+                Instance_hold.getMframe().getjLabel_show_status().setText("SFTP Release...");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DownThread.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }while(Instance_hold.getScpfrom().isAlive());
             Instance_hold.getSCPFrom_Monitor().setClosechannelflag(false);
+            Instance_hold.getMframe().getjLabel_show_status().setText("");
         }
         
         Instance_hold.getLm().setExit(true);
         while(Instance_hold.getListen().isAlive()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(DownThread.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -69,11 +74,11 @@ public class DownThread extends Thread {
             
         Instance_hold.getSh_mon().setExit(true);
         while (Instance_hold.getSh().isAlive()) {
-            System.out.println("WAITING FOR SHELL EXIT");
+            System.out.println("Down Thread: Waiting for Shell release...");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
-
+                Logger.getLogger(DownThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -93,7 +98,6 @@ public class DownThread extends Thread {
         Instance_hold.getSCPFrom_Monitor().setClosedlmonitor(false);
         Instance_hold.getSCPFrom_Monitor().setExit(false);
         Instance_hold.getSCPFrom_Monitor().setDlfinish(false);
-        //Instance_hold.getSCPFrom_Monitor().setMedreleased(false);
         Instance_hold.getSCPFrom_Monitor().setMonitorisclosed(false);
         Instance_hold.getSCPFrom_Monitor().setNewsession(false);
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(false);
@@ -102,7 +106,7 @@ public class DownThread extends Thread {
         
         if (Instance_data.getTmpPath() != null) {
             File file = new File(Instance_data.getTmpPath());
-            Main_controls.del(file);
+            MainControls.del(file);
 
             do {
                 crdir = file.mkdirs();
@@ -133,7 +137,7 @@ public class DownThread extends Thread {
         do {
             System.out.println("WAITING FOR CThread EXIT");
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(DownThread.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -147,17 +151,27 @@ public class DownThread extends Thread {
         Instance_hold.getMframe().getjProgressBar_SCP().setValue(0);
         Instance_hold.getMframe().getjLabel_src().setText("");
         Instance_hold.getMframe().getjLabel_speedval().setText("");
-        //Instance_hold.getMframe().getContentPane().repaint();
+        Instance_hold.getMframe().getjLabel_show_flnm().setText("");
         Instance_hold.getMframe().getjButton_connect().setEnabled(false);
+        Instance_hold.getMframe().getjTextField_Server().setEnabled(true);
+        Instance_hold.getMframe().getjTextField_Port().setEnabled(true);
+        Instance_hold.getMframe().getjTextPane_info().setEditable(true);
+        Instance_data.setPlLoadEnabled(false);
         Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(false);
+        
+        Instance_hold.getSetframe().getRootPane().setDefaultButton(Instance_hold.getSetframe().getjButton_ok());
         
         if (!Instance_hold.getSh_mon().isCancel()) {
             System.out.println("NEW WINDOW with Server");
             Instance_hold.getMframe().getjTextField_Server().setText("");
             Instance_hold.getMframe().getjTextField_Port().setText("");
             Instance_hold.getSetframe().getjButton_import().setEnabled(true);
+            Instance_hold.getSetframe().getjButton_ok().setEnabled(true);
         }else {
             Instance_hold.getMframe().getjButton_connect().setEnabled(true);
+            Instance_hold.getMframe().getjTextField_Server().setEnabled(true);
+            Instance_hold.getMframe().getjTextField_Port().setEnabled(true);
+            Instance_hold.getMframe().getjTextPane_info().setEditable(true);
         }
         
         Instance_hold.getSh_mon().setCancel(false);

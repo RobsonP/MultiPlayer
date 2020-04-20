@@ -44,6 +44,8 @@ public class Shell_Out extends Thread{
                     }catch(JSchException exc) {
                         exc.printStackTrace();
                         
+                        //System.out.println("JSCHException");
+                        
                         DownThread dt = new DownThread();
                         dt.start();
                         break;
@@ -51,7 +53,7 @@ public class Shell_Out extends Thread{
                 }
                 while (!Instance_data.getChannel().isConnected()) {
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Shell_Out.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -73,15 +75,11 @@ public class Shell_Out extends Thread{
             }
             
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Shell_Out.class.getName()).log(Level.SEVERE, null, ex);
             }
             if (Instance_hold.getLm().isExit()) break;
         }        
     }
-    /**
-     * Access to Output of executed command
-     * @return String
-     */
 }

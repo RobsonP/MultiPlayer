@@ -48,7 +48,6 @@ public class FC_sav_Listener implements ActionListener{
                 fw.close();
                 
                 JOptionPane.showMessageDialog(null, "File saved", null, JOptionPane.INFORMATION_MESSAGE);
-                Instance_hold.getSetframe().dispose();
             } catch (IOException ex) {
                 Logger.getLogger(FC_sav_Listener.class.getName()).log(Level.SEVERE, null, ex);
             }

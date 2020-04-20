@@ -7,18 +7,13 @@ package gui;
 import cmd.DownThread;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-import control.Main_controls;
-import data.Playlist;
 import instance.Instance_data;
 import instance.Instance_hold;
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JRootPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *

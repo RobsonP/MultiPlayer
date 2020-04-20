@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\mautz\Documents\NetBeansProjects\SoSSH\dist\SoSSH.jar</jar>
+  <outfile>C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\mautz\Documents\NetBeansProjects\SoSSH\logo.ico</icon>
+  <classPath>
+    <mainClass>soSSH.SoSSH</mainClass>
+    <cp>lib/jna-3.3.0-platform.jar</cp>
+    <cp>lib/jna-3.3.0.jar</cp>
+    <cp>lib/jsch-0.1.54.jar</cp>
+    <cp>lib/vlcj-1.2.1-b2.jar</cp>
+    <cp>lib/${libs.beans-binding.classpath}</cp>
+  </classPath>
+  <jre>
+    <path>C:\Program Files (x86)\Java\jre1.8.0_241</path>
+    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJreAsFallback>false</bundledJreAsFallback>
+    <minVersion>1.7</minVersion>
+    <maxVersion>1.8</maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <runtimeBits>64/32</runtimeBits>
+  </jre>
+</launch4jConfig>

@@ -126,8 +126,6 @@ public class ParseControl {
 
                     if (filenm.endsWith(" [")) filenm = filenm.substring(0, filenm.length()-3);
 
-                    System.out.println("FILENAME: " + filenm);
-
                     filenm = filenm.replace("'", "\\'");
                     filenm = filenm.replace("(", "\\(");
                     filenm = filenm.replace(")", "\\)");

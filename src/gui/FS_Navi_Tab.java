@@ -10,25 +10,21 @@
  */
 package gui;
 
-import control.Main_controls;
+import control.MainControls;
 import instance.Instance_data;
 import instance.Instance_hold;
 import java.awt.Color;
 import java.awt.Container;
-/*
-import java.awt.Dimension;
-import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
-*/
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.plaf.basic.BasicSliderUI;
 
 /**
  *
@@ -60,7 +56,7 @@ public class FS_Navi_Tab extends JDialog {
     private void initComponents() {
 
         jSlider_Media = new javax.swing.JSlider();
-        jLabel1 = new javax.swing.JLabel();
+        jLabel_vol = new javax.swing.JLabel();
         jSlider_vol = new javax.swing.JSlider();
         jLabel_time = new javax.swing.JLabel();
         jLabel_stop = new javax.swing.JLabel();
@@ -81,39 +77,53 @@ public class FS_Navi_Tab extends JDialog {
         });
 
         jSlider_Media.setMaximum(1000);
+        MouseListener[] media_listeners = jSlider_Media.getMouseListeners();
+        for (MouseListener l : media_listeners) jSlider_Media.removeMouseListener(l); // remove UI-installed TrackListener
         jSlider_Media.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jSlider_MediaMouseReleased(evt);
-            }
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jSlider_MediaMouseClicked(evt);
-            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jSlider_MediaMouseEntered(evt);
             }
-        });
-        jSlider_Media.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jSlider_MediaMouseDragged(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jSlider_MediaMousePressed(evt);
             }
         });
 
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel1.setText("Volume");
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+        jLabel_vol.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel_vol.setText("Volume");
+        jLabel_vol.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel1MouseEntered(evt);
+                jLabel_volMouseEntered(evt);
             }
         });
 
+        /*
+        final BasicSliderUI ui = (BasicSliderUI) jSlider_vol.getUI();
+        BasicSliderUI.TrackListener tl = ui.new TrackListener() {
+            // this is where we jump to absolute value of click
+            @Override public void mouseClicked(MouseEvent e) {
+
+            }
+            // disable check that will invoke scrollDueToClickInTrack
+            @Override public boolean shouldScroll(int dir) {
+                return false;
+            }
+        };
+
+        MouseListener[] listeners = jSlider_vol.getMouseListeners();
+        for (MouseListener l : listeners) jSlider_vol.removeMouseListener(l); // remove UI-installed TrackListener
+        jSlider_vol.addMouseListener(tl);
+        */
+        jSlider_vol.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jSlider_volMouseDragged(evt);
+            }
+        });
         jSlider_vol.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jSlider_volMouseEntered(evt);
             }
-        });
-        jSlider_vol.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                jSlider_volMouseDragged(evt);
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jSlider_volMousePressed(evt);
             }
         });
 
@@ -174,9 +184,6 @@ public class FS_Navi_Tab extends JDialog {
 
         jLabel_next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_fwd_small.png"))); // NOI18N
         jLabel_next.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_nextMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_nextMouseClicked(evt);
             }
@@ -189,13 +196,13 @@ public class FS_Navi_Tab extends JDialog {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_nextMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_nextMouseReleased(evt);
+            }
         });
 
         jLabel_prev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gui/design/mcb_grey_prev_small.png"))); // NOI18N
         jLabel_prev.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jLabel_prevMouseReleased(evt);
-            }
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jLabel_prevMouseClicked(evt);
             }
@@ -207,6 +214,9 @@ public class FS_Navi_Tab extends JDialog {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jLabel_prevMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel_prevMouseReleased(evt);
             }
         });
 
@@ -221,14 +231,14 @@ public class FS_Navi_Tab extends JDialog {
                         .addComponent(jLabel_play)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel_stop)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel_time)
-                        .addGap(11, 11, 11)
+                        .addGap(30, 30, 30)
+                        .addComponent(jLabel_time, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
                         .addComponent(jLabel_prev)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel_next)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addComponent(jLabel_vol)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jSlider_vol, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(39, 39, 39)
@@ -243,22 +253,29 @@ public class FS_Navi_Tab extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSlider_Media, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel_play)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jSlider_vol, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel_stop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel1)
-                                .addComponent(jLabel_time))))
-                    .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton_fullscreen, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel_play)
+                                    .addComponent(jLabel_stop)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel_time)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel_prev, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(jLabel_next, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel_vol, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jSlider_vol, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                        .addGap(21, 21, 21))))
         );
 
         pack();
@@ -275,20 +292,6 @@ public class FS_Navi_Tab extends JDialog {
         System.out.println("Exited");
     }//GEN-LAST:event_formMouseExited
 
-    private void jSlider_MediaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseReleased
-        //System.out.println("SETTIME_VALUE: " + (int)(Instance_data.getMedia_length()*(sl_value/1000.0)));
-        if (dragged) {
-            Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(sl_value/1000.0)));
-            dragged = false;
-        }
-    }//GEN-LAST:event_jSlider_MediaMouseReleased
-
-    private void jSlider_MediaMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseDragged
-        sl_value = this.jSlider_Media.getValue();
-        System.out.println("SLVALUE: " + sl_value/1000.0);
-        dragged = true;
-    }//GEN-LAST:event_jSlider_MediaMouseDragged
-
     private void jSlider_volMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_volMouseDragged
         vo_value = this.jSlider_vol.getValue();
         Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(vo_value);
@@ -301,32 +304,32 @@ public class FS_Navi_Tab extends JDialog {
         Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
         while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException ex) {
                 Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         
-        this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_play_small.png")));
+        this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
         this.jSlider_Media.setValue(0);
         stop = true;
     }//GEN-LAST:event_jLabel_stopMouseClicked
 
     private void jLabel_stopMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseEntered
         Instance_hold.getFsf().getMml().getTimer().cancel();
-        this.jLabel_stop.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_stop_small.png")));
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
     }//GEN-LAST:event_jLabel_stopMouseEntered
 
     private void jLabel_stopMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseExited
-        this.jLabel_stop.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_stop_small.png")));
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_grey_stop_small());
     }//GEN-LAST:event_jLabel_stopMouseExited
 
     private void jLabel_stopMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMousePressed
-        this.jLabel_stop.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_green_stop_small.png")));
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_green_stop_small());
     }//GEN-LAST:event_jLabel_stopMousePressed
 
     private void jLabel_stopMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_stopMouseReleased
-        this.jLabel_stop.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_stop_small.png")));
+        this.jLabel_stop.setIcon(Instance_hold.getIm_hold().getMcb_blue_stop_small());
     }//GEN-LAST:event_jLabel_stopMouseReleased
 
     private void jButton_fullscreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_fullscreenActionPerformed
@@ -335,73 +338,144 @@ public class FS_Navi_Tab extends JDialog {
         Instance_hold.getFsnt().setVisible(false);
         Instance_hold.getFsf().setVisible(false);
         Instance_data.setMedia_time(Instance_hold.getFsf().getEmpc().getMediaPlayer().getTime());
-        Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
-        Instance_hold.getPlayframe().setVisible(true);
-        Instance_hold.getPlayframe().getEmpc().getMediaPlayer().playMedia(Instance_data.getPlaypath());
-        Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime(Instance_data.getMedia_time());
-        while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && file.exists()) {
-            System.out.println("FSF:   WAITING TO START PLAYING:::::");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
-
-            }
-        };
         
-        Instance_hold.getPlayframe().getjLabel_play().setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_pause_small.png")));
+        Instance_hold.getPlayframe().setVisible(true);
+        if (Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+            Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().playMedia(Instance_data.getPlaypath());
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime(Instance_data.getMedia_time());
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setVolume(Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume());
+            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && file.exists()) {
+                System.out.println("FSF:   WAITING TO START PLAYING:::::");
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            Instance_hold.getPlayframe().getjLabel_play().setIcon(Instance_hold.getIm_hold().getMcb_grey_pause_small());
+        }else {
+            Instance_hold.getPlayframe().getjLabel_play().setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
+            
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().playMedia(Instance_data.getPlaypath());
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().setTime(Instance_data.getMedia_time());
+            while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && file.exists()) {
+                System.out.println("FSF:   WAITING TO START PLAYING:::::");
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            Instance_hold.getPlayframe().getEmpc().getMediaPlayer().pause();
+            while(Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            Instance_hold.getPlayframe().setStop(true);
+        }        
         Instance_hold.getMframe().getClistener().setFullscreen(false);
     }//GEN-LAST:event_jButton_fullscreenActionPerformed
 
     private void jLabel_playMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseClicked
+        int volume = 0;
+        
         if (this.playcontrol) {
             this.setEnabled(false);
-                if (!Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                    Instance_hold.getFsf().getEmpc().getMediaPlayer().start();
-                    while(!Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                        //System.out.println("WAITING TO START PLAYING:::::");
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
+            
+            System.out.println("Media Player State: " + Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState());
+             
+            if (Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("libvlc_Stopped") && !Instance_hold.getPlay().isAlive()) {
+                Instance_hold.getVplay_mon().setInterrupted_play(true);
+            }else if(Instance_hold.getPlay().isAlive() && Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("libvlc_Ended")) {
+                Instance_hold.getVplay_mon().setInterrupted_play(true);
+            }else if (!Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying() && Instance_hold.getPlay().isAlive() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("libvlc_Error") && !Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("false")) {
+                
+                this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_pause_small());
+                
+                volume = Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume();
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(0);
+                
+                System.out.println("Media Player State: " + Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState());
+                
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().start();
 
-                        }
-                    };
-
-                    this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_pause_small.png")));
-                    stop = false;
-                }
-                else {
-                    Instance_hold.getFsf().getEmpc().getMediaPlayer().pause();
-                    while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                for (int i=0;i<=volume;i++) {                    
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume((Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume()+1));
+                    try {
+                        Thread.sleep(3);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-                    this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_play_small.png")));
-                    stop = true;
                 }
-                this.setEnabled(true);
+          
+                stop = false;
+            }
+            else if (Instance_hold.getPlay().isAlive() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("libvlc_Error") && !Instance_hold.getFsf().getEmpc().getMediaPlayer().getMediaPlayerState().toString().equals("false")) {
+                this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_play_small());
+                
+                volume = Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume();
+                for (int i=0;i<200;i++) {                    
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume((Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume()-1));
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().pause();
+                while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+               
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(volume-1);
+ 
+                stop = true;
+            }else {
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
+                while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
+                this.jSlider_Media.setValue(0);
+                stop = true;
+            }
+            this.setEnabled(true);
         }
     }//GEN-LAST:event_jLabel_playMouseClicked
 
     private void jLabel_playMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseEntered
         Instance_hold.getFsf().getMml().getTimer().cancel();
-        if (stop) this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_play_small.png")));
-        else this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_blue_pause_small.png")));
+        if (stop) this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_play_small());
+        else this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_blue_pause_small());
     }//GEN-LAST:event_jLabel_playMouseEntered
 
     private void jLabel_playMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMouseExited
-        if (stop) this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_play_small.png")));
-        else this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_grey_pause_small.png")));
+        if (stop) this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_play_small());
+        else this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_grey_pause_small());
     }//GEN-LAST:event_jLabel_playMouseExited
 
     private void jLabel_playMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_playMousePressed
         if (stop) {
-            this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_green_play_small.png")));
+            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_play_small());
         }else {
-            this.jLabel_play.setIcon(new ImageIcon(getClass().getResource("/gui/design/mcb_green_pause_small.png")));
+            this.jLabel_play.setIcon(Instance_hold.getIm_hold().getMcb_green_pause_small());
         }
     }//GEN-LAST:event_jLabel_playMousePressed
 
@@ -409,9 +483,9 @@ public class FS_Navi_Tab extends JDialog {
         Instance_hold.getFsf().getMml().getTimer().cancel();
     }//GEN-LAST:event_jLabel_timeMouseEntered
 
-    private void jLabel1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseEntered
+    private void jLabel_volMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_volMouseEntered
         Instance_hold.getFsf().getMml().getTimer().cancel();
-    }//GEN-LAST:event_jLabel1MouseEntered
+    }//GEN-LAST:event_jLabel_volMouseEntered
 
     private void jSlider_volMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_volMouseEntered
         Instance_hold.getFsf().getMml().getTimer().cancel();
@@ -420,14 +494,6 @@ public class FS_Navi_Tab extends JDialog {
     private void jButton_fullscreenMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_fullscreenMouseEntered
         Instance_hold.getFsf().getMml().getTimer().cancel();
     }//GEN-LAST:event_jButton_fullscreenMouseEntered
-
-    private void jSlider_MediaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseEntered
-        Instance_hold.getFsf().getMml().getTimer().cancel();
-    }//GEN-LAST:event_jSlider_MediaMouseEntered
-
-    private void jSlider_MediaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseClicked
-        if (!dragged) Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(this.jSlider_Media.getMousePosition().getX()/this.jSlider_Media.getSize().getWidth())));        
-    }//GEN-LAST:event_jSlider_MediaMouseClicked
 
     private void jLabel_nextMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_nextMouseReleased
         this.jLabel_next.setIcon(Instance_hold.getIm_hold().getMcb_blue_fwd_small());
@@ -440,13 +506,13 @@ public class FS_Navi_Tab extends JDialog {
 
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
             this.setEnabled(false);
-            Main_controls.nextMedia();
+            MainControls.nextMedia();
 
             while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -478,13 +544,13 @@ public class FS_Navi_Tab extends JDialog {
 
             Instance_hold.getMframe().getjProgressBar_main().setIndeterminate(true);
             this.setEnabled(false);
-            Main_controls.prevMedia();
+            MainControls.prevMedia();
 
             while(!Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying() && !Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -504,6 +570,103 @@ public class FS_Navi_Tab extends JDialog {
     private void jLabel_prevMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel_prevMousePressed
         this.jLabel_prev.setIcon(Instance_hold.getIm_hold().getMcb_green_prev_small());
     }//GEN-LAST:event_jLabel_prevMousePressed
+
+    private void jSlider_MediaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMouseEntered
+        Instance_hold.getFsf().getMml().getTimer().cancel();
+    }//GEN-LAST:event_jSlider_MediaMouseEntered
+
+    private void jSlider_volMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_volMousePressed
+        final BasicSliderUI ui = (BasicSliderUI) jSlider_vol.getUI();
+        
+        Point p = evt.getPoint();
+        int value = ui.valueForXPosition(p.x);
+
+        jSlider_vol.setValue(value);
+        Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(value);
+        Instance_hold.getMframe().getjSlider_vol().setValue(value);
+        Instance_hold.getPlayframe().getjSlider_vol().setValue(value);
+    }//GEN-LAST:event_jSlider_volMousePressed
+
+    private void jSlider_MediaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider_MediaMousePressed
+        final BasicSliderUI media_ui = (BasicSliderUI) jSlider_Media.getUI();
+        Point p = evt.getPoint();
+        int value = media_ui.valueForXPosition(p.x);
+        
+        System.out.println("SLIDER: " + ((double)((double)value/(double)jSlider_Media.getMaximum())*100));
+        System.out.println("PROGRESS BAR: " + Instance_hold.getMframe().getjProgressBar_SCP().getValue());
+
+        if (!Instance_data.isSkip()) {        
+            if ((((double)((double)value/(double)jSlider_Media.getMaximum())*100)+5) < Instance_hold.getMframe().getjProgressBar_SCP().getValue()) {
+                if (Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                    int volume = 0;
+
+                    volume = Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume();
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(0);
+
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().pause();
+                    while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(double)((double)value/(double)jSlider_Media.getMaximum())));
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().start();
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    for (int i=0;i<volume;i++) {                    
+                        Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume((Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume()+1));
+                        try {
+                            Thread.sleep(9);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+        }else {
+            if (Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                int volume = 0;
+
+                volume = Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume();
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume(0);
+
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().pause();
+                while(Instance_hold.getFsf().getEmpc().getMediaPlayer().isPlaying()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().setTime((int)(Instance_data.getMedia_length()*(double)((double)value/(double)jSlider_Media.getMaximum())));
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().start();
+
+                try {
+                    Thread.sleep(40);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                for (int i=0;i<volume;i++) {                    
+                    Instance_hold.getFsf().getEmpc().getMediaPlayer().setVolume((Instance_hold.getFsf().getEmpc().getMediaPlayer().getVolume()+1));
+                    try {
+                        Thread.sleep(9);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jSlider_MediaMousePressed
 
     public JSlider getjSlider_Media() {
         return jSlider_Media;
@@ -535,12 +698,12 @@ public class FS_Navi_Tab extends JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_fullscreen;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_next;
     private javax.swing.JLabel jLabel_play;
     private javax.swing.JLabel jLabel_prev;
     private javax.swing.JLabel jLabel_stop;
     private javax.swing.JLabel jLabel_time;
+    private javax.swing.JLabel jLabel_vol;
     private javax.swing.JSlider jSlider_Media;
     private javax.swing.JSlider jSlider_vol;
     // End of variables declaration//GEN-END:variables

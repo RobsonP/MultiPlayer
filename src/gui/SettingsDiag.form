@@ -56,16 +56,17 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jLabel_server" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="jTextField_server" max="32767" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="jTextField_server" pref="288" max="32767" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jButton_save" min="-2" pref="67" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="jButton_ok" min="-2" pref="67" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jButton_cancel" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="200" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
                           </Group>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="jButton_export" max="32767" attributes="0"/>
                               <Component id="jButton_import" max="32767" attributes="0"/>
@@ -114,7 +115,7 @@
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jButton_export" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton_save" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton_ok" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton_cancel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="59" max="32767" attributes="0"/>
@@ -141,6 +142,9 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_exportActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="KeyStroke keyExport = KeyStroke.getKeyStroke(KeyEvent.VK_E, Event.ALT_MASK); &#xa;Action performExport = new AbstractAction(&quot;Export&quot;) {  &#xa;    public void actionPerformed(ActionEvent e) {     &#xa;         //do your save&#xa;        JFileChooser fc = new JFileChooser();&#xa;        fc.setVisible(true);&#xa;        FC_sav_Listener listener = new FC_sav_Listener();&#xa;        listener.setJfc(fc);&#xa;        fc.addActionListener(listener);&#xa;        fc.showSaveDialog(Instance_hold.getSetframe());&#xa;    }&#xa;}; &#xa; &#xa;jButton_export.getActionMap().put(&quot;performExport&quot;, performExport);&#xa;jButton_export.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyExport, &quot;performExport&quot;);&#xa;&#xa;jButton_export.setMnemonic(&apos;E&apos;);"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel_uname">
           <Properties>
@@ -242,12 +246,12 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="jButton_save">
+        <Component class="javax.swing.JButton" name="jButton_ok">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Save"/>
+            <Property name="text" type="java.lang.String" value="OK"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_saveActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_okActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButton_import">
@@ -257,6 +261,9 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_importActionPerformed"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="KeyStroke keyImport = KeyStroke.getKeyStroke(KeyEvent.VK_I, Event.ALT_MASK); &#xa;Action performImport = new AbstractAction(&quot;Import&quot;) {  &#xa;    public void actionPerformed(ActionEvent e) {     &#xa;         //do your save&#xa;        JFileChooser fc = new JFileChooser();&#xa;        fc.setVisible(true);&#xa;        FC_load_Listener listener = new FC_load_Listener();&#xa;        listener.setJfc(fc);&#xa;        listener.setSetdiag(Instance_hold.getSetframe());&#xa;        fc.addActionListener(listener);&#xa;        fc.showOpenDialog(Instance_hold.getSetframe());&#xa;    }&#xa;}; &#xa; &#xa;jButton_import.getActionMap().put(&quot;performImport&quot;, performImport);&#xa;jButton_import.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyImport, &quot;performImport&quot;);&#xa;&#xa;jButton_import.setMnemonic(&apos;I&apos;);"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

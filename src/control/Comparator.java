@@ -12,27 +12,28 @@ import java.util.List;
  *
  * @author RobsonP
  */
-public class Comparator {
-    
+public class Comparator {  
     public static List<Node_entry> sortList(ArrayList<Node_entry> nodelist) {
         try {
             for (int i=0;i<nodelist.size();i++) {
                 int j = i+1;
 
-                do {
-                    if (compareTo(nodelist.get(i),nodelist.get(j)) == 1) {
-                        Node_entry ne = nodelist.get(i);
-                        nodelist.set(i, nodelist.get(j));
-                        nodelist.set(j, ne);
-                        
-                        j = i;
-                    }
-                    
-                    j++;
-                }while (j<nodelist.size());
+                if (j<nodelist.size()) {
+                    do {
+                        if (compareTo(nodelist.get(i),nodelist.get(j)) == 1) {
+                            Node_entry ne = nodelist.get(i);
+                            nodelist.set(i, nodelist.get(j));
+                            nodelist.set(j, ne);
+
+                            j = i;
+                        }
+
+                        j++;
+                    }while (j<nodelist.size());                
+                }
             }
         }catch(Exception exc) {
-            System.out.println("EXCEPTION SORT");
+            System.out.println("SORT EXCEPTION");
         }
         
         return nodelist;

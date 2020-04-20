@@ -10,10 +10,11 @@ package monitor;
  */
 public class Play_Monitor {
     private int irruptflag;
-    private boolean /*stopped,*/ exit, finished;
+    private boolean /*stopped,*/ exit, finished, interrupted_play;
             
     public Play_Monitor() {
         exit = false;
+        interrupted_play = false;
         irruptflag = 0;
     }
     
@@ -47,5 +48,13 @@ public class Play_Monitor {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
-    }   
+    }
+
+    public boolean isInterrupted_play() {
+        return interrupted_play;
+    }
+
+    public void setInterrupted_play(boolean interrupted_play) {
+        this.interrupted_play = interrupted_play;
+    }
 }

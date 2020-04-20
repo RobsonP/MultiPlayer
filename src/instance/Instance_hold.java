@@ -27,9 +27,9 @@ public class Instance_hold {
     private static Shell sh = new Shell();
     private static SCP scp = new SCP();
     private static Image_hold im_hold = new Image_hold();
+    private static Play play = new Play();
     private static MainFrame mframe = new MainFrame();
     private static Playlist pl = new Playlist();
-    private static Play play = new Play();
     private static Shell_Monitor sh_mon = new Shell_Monitor();
     private static Play_Monitor play_mon = new Play_Monitor();
     private static Listen_Monitor list_mon = new Listen_Monitor();
@@ -60,11 +60,11 @@ public class Instance_hold {
         Instance_hold.pl = pl;
     }
 
-    public static Play getVplay() {
+    public static Play getPlay() {
         return play;
     }
 
-    public static void setVplay(Play vplay) {
+    public static void setPlay(Play vplay) {
         Instance_hold.play = vplay;
     }
 
@@ -142,7 +142,7 @@ public class Instance_hold {
     }
      
     public static void create_VPlay() {
-        if (!Instance_hold.getVplay().isAlive()) Instance_hold.play = new Play();
+        if (!Instance_hold.getPlay().isAlive()) Instance_hold.play = new Play();
     }
 
     public static PasswordDiagRSA getPframeRSA() {
@@ -195,5 +195,14 @@ public class Instance_hold {
 
     public static void setCthread(ConnectThread cthread) {
         Instance_hold.cthread = cthread;
+    }  
+/*
+    public static Main_controls getMcontrols() {
+        return mcontrols;
     }
+
+    public static void setMcontrols(Main_controls mcontrols) {
+        Instance_hold.mcontrols = mcontrols;
+    }
+*/
 }

@@ -5,7 +5,7 @@
 package cmd;
 
 import com.jcraft.jsch.SftpProgressMonitor;
-import control.Main_controls;
+import instance.Instance_data;
 import instance.Instance_hold;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,8 +15,7 @@ import parse.ParseControl;
  *
  * @author RobsonP
  */
-public class SCP_OutProgressMonitor implements SftpProgressMonitor
-{
+public class SCP_OutProgressMonitor implements SftpProgressMonitor {
     private String dest;
     private int anz16384bytes;
     private long loaded_bytes;
@@ -34,23 +33,41 @@ public class SCP_OutProgressMonitor implements SftpProgressMonitor
     }
 
     @Override
-    public void init(int op, java.lang.String src, java.lang.String dest, long max) 
-    {
+    public void init(int op, java.lang.String src, java.lang.String dest, long max) {
         System.out.println("STARTING: "+op+" "+src+" -> "+dest+" total: "+max);
         this.dest = dest;
         this.max = max;
+        
+        char c = '/';
+        
+        String flnm_cache = "", flnm = "";
+        
+        for (int i=src.length()-1;i>=0;i--) {
+            if (src.charAt(i) == '/') {
+                break;
+            } else {
+                flnm_cache = flnm_cache + src.charAt(i);
+            }
+        }
+        
+        for (int i=flnm_cache.length()-1;i>=0;i--) {
+            flnm = flnm + flnm_cache.charAt(i);
+        }
+
+        if (flnm.equals(Instance_hold.getPlay().getFlnm())) {
+            Instance_data.setSkip(false);
+        }else Instance_data.setSkip(true);
+        
         String source = src.split("/")[src.split("/").length-1];
         
-        if (source.length() > 50) Instance_hold.getMframe().getjLabel_src().setText(source.substring(0, 50) + "...");
+        if (source.length() > 40) Instance_hold.getMframe().getjLabel_src().setText(source.substring(0, 30) + "...");
         else Instance_hold.getMframe().getjLabel_src().setText(source);
         
         Instance_hold.getSCPFrom_Monitor().setInit(true);
     }
-
-        
+  
     @Override
-    public boolean count(long bytes)
-    {        
+    public boolean count(long bytes) {        
         int value = 0;
         anz16384bytes++;
         loaded_bytes = loaded_bytes + bytes;
@@ -69,26 +86,31 @@ public class SCP_OutProgressMonitor implements SftpProgressMonitor
         if (new String(dest).endsWith("mp3") || new String(dest).endsWith("MP3") || new String(dest).endsWith("wav") || new String(dest).endsWith("WAV")) {
             if (anz16384bytes == 16) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
         }else if (!new String(dest).endsWith("jpg") && !new String(dest).endsWith("JPG")){
-            if (anz16384bytes == 128) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
+            if (new String(dest).endsWith("avi") || new String(dest).endsWith("AVI")) {
+                if (anz16384bytes == 64) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
+            }else {
+                if (anz16384bytes == 300) Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
+            }
         }
         
         if (Instance_hold.getSCPFrom_Monitor().isClosechannelflag()) {
             Instance_hold.getVplay_mon().setExit(true);
             Instance_hold.getVplay_mon().setIrruptflag(1);
+
+            System.out.println("SCP_Out: Waiting for VPlay release...");
             do {
-                System.out.println("VPlay is waiting to exit");
+                Instance_hold.getMframe().getjLabel_show_status().setText("Waiting for Media Release");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(SCP_OutProgressMonitor.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }while (Instance_hold.getVplay().isAlive());
+            }while (Instance_hold.getPlay().isAlive());
             Instance_hold.getVplay_mon().setExit(false);
             Instance_hold.getVplay_mon().setIrruptflag(0);
-            
-            
-            System.out.println("SCPOUTPROGRESSMONITOR is interrupted!!!");
-            if (Instance_hold.getVplay().isAlive()) {
+            Instance_hold.getMframe().getjLabel_show_status().setText("");
+
+            if (Instance_hold.getPlay().isAlive()) {
                 try {
                     if (Instance_hold.getPlayframe().getEmpc().getMediaPlayer().isPlaying()) {
                         Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
@@ -102,22 +124,21 @@ public class SCP_OutProgressMonitor implements SftpProgressMonitor
                     exc.printStackTrace();
                 }
             }
-
+            
             Instance_hold.getSCPFrom_Monitor().setExit(true);
             Instance_hold.getSCPFrom_Monitor().setIrruptflag(1);
-            
+ 
             return false;
         }
   
         value = (int)(((double)(loaded_bytes)/(double)max)*100.0);
         Instance_hold.getMframe().getjProgressBar_SCP().setValue(value);
-        return(true);
+        return true;
     }
 
     @Override
-    public void end()
-    {
-        System.out.println("\nFINISHED!");
+    public void end() {
+        System.out.println("FINISHED!");        
         Instance_hold.getSCPFrom_Monitor().setRdytoplay(true);
     }
 

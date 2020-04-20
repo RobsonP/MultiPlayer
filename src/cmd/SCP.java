@@ -5,7 +5,6 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import control.Conversion;
-import control.Main_controls;
 import data.MyUserInfo;
 import gui.MessageThread;
 import instance.Instance_data;
@@ -17,7 +16,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SCP extends Thread{ 
+public class SCP extends Thread { 
     private File f;
     private SCP_OutProgressMonitor monitor;
     private String filename, flnm;
@@ -32,11 +31,12 @@ public class SCP extends Thread{
      * starts the Buffer-Segment of the program, which is waiting
      * for added Items into playlist. It begins downloading after a double-click
      * on an playlist-item. After that it begins downloading data from
-     * ssh-server in the moment, the user adds an Item to playlist.
-     * If the user jumps to a file, which is available(completely downloaded
-     * or still downloading), the Thread jumps to the File and starts buffering.
+     * ssh-server.
+     * The Thread jumps to the File and starts buffering.
      * After it buffered enough data, it gives the Play-Segment the signal
      * to start playing media.
+     * If the user jumps to a file, which is available(completely downloaded
+     * or still downloading), the Play-Segment starts playing without buffering.
      * @return void
      */
     
@@ -47,16 +47,19 @@ public class SCP extends Thread{
     }
     
     @Override
-  public void run(){
+    public void run(){
     Instance_data.decrementExitedthreads();
     i = Instance_data.getDlindx();
-    System.out.println("start");
     
-    do {    
+    do {
         try{  
             filename = Instance_hold.getPl().getEntries().get(i).split("/")[Instance_hold.getPl().getEntries().get(i).split("/").length-1];
             flnm = filename.replace("\\", "");
             f = new File(Instance_data.getTmpPath() + "\\" + flnm);
+
+            if (flnm.equals(Instance_hold.getPlay().getFlnm())) {
+                Instance_data.setSkip(false);
+            }else Instance_data.setSkip(true);
 
             hasdownloaded = false;
 
@@ -72,7 +75,6 @@ public class SCP extends Thread{
 
             }
             
-            System.out.println("PLENTRY: " + Instance_data.getHost() + ":" + Instance_hold.getPl().getEntries().get(i));
             args[0] = Instance_data.getHost() + ":" + Instance_hold.getPl().getEntries().get(i);
             args[1] = Instance_data.getTmpPath() + "\\" + flnm;
             Instance_data.setCpystr(args);
@@ -143,25 +145,24 @@ public class SCP extends Thread{
             cmds.add(splittedrfile[splittedrfile.length-1]);
             cmds.add(lfile);
 
-            String cmd=(String)cmds.elementAt(0);
-            String p1=(String)cmds.elementAt(1);
-
-            System.out.println("p1: " + p1);
-
-            String p2=".";
+            String cmd = (String)cmds.elementAt(0);
             
-            if(cmds.size()==3)p2=(String)cmds.elementAt(2);
+            String p1 = (String)cmds.elementAt(1);
+            String p2=".";
+            if(cmds.size() == 3) p2 = (String)cmds.elementAt(2);
+            
             try{
                 monitor = new SCP_OutProgressMonitor();
 
-                if(cmd.startsWith("get")){
-                    int mode=ChannelSftp.OVERWRITE;
+                if (cmd.startsWith("get")) {
+                    int mode = ChannelSftp.OVERWRITE;
+                    
                     switch (cmd) {
                         case "get-resume":
-                            mode=ChannelSftp.RESUME;
+                            mode = ChannelSftp.RESUME;
                             break;
                         case "get-append":
-                            mode=ChannelSftp.APPEND;
+                            mode = ChannelSftp.APPEND;
                             break;
                     }
                     
@@ -180,22 +181,17 @@ public class SCP extends Thread{
                 break;
             }
             
-            System.out.println("SCP after get");
-            
             if (Instance_hold.getSCPFrom_Monitor().isInterrupted()) {
                 System.out.println("SCP is interrupted");
                 
                 throw new Exception();
             }
             
-            session.disconnect();
-            
+            session.disconnect();       
         }
 
-            i++;
+        i++;
         }catch(Exception e) {            
-            System.out.println("SCP: EXCEPTION");
-            System.out.println(e.toString());
             if (!e.toString().equals("java.lang.Exception") && !e.getMessage().equals("verify: false")) {
                 System.out.println("PULLING DOWN");
 
@@ -233,34 +229,39 @@ public class SCP extends Thread{
             if (Instance_hold.getSCPFrom_Monitor().isExit() || Instance_hold.getSCPFrom_Monitor().isNewsession() || Instance_hold.getSCPFrom_Monitor().isPlremove()) {
                 Instance_hold.getVplay_mon().setExit(true);
                 Instance_hold.getVplay_mon().setIrruptflag(1);
-                do {
-                    System.out.println("SCP: VPlay is waiting to exit");
+
+                System.out.println("SCP: Waiting for VPlay release...");
+                do {        
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(10);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Main_controls.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(SCP.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                }while (Instance_hold.getVplay().isAlive());
+                }while (Instance_hold.getPlay().isAlive());
                 Instance_hold.getVplay_mon().setExit(false);
                 Instance_hold.getVplay_mon().setIrruptflag(0);
 
-                    System.out.println("DELETING");
-                    if (f.exists()) f.delete();
+                Instance_hold.getPlayframe().getEmpc().getMediaPlayer().stop();
+                Instance_hold.getFsf().getEmpc().getMediaPlayer().stop();
 
-                    try {
-                        if (channel.isConnected()) channel.disconnect();
-                    }catch(NullPointerException exc) {
-
-                    }
-                    try {
-                        if (session.isConnected()) session.disconnect();
-                    }catch(NullPointerException exc) {
-
-                    }
-                    break;
+                System.out.println("DELETING");
+                if (f.exists()) {
+                    while(!f.delete()) System.out.println("DELETING");
                 }
-          
-          
+
+                try {
+                    if (channel.isConnected()) channel.disconnect();
+                }catch(NullPointerException exc) {
+
+                }
+                try {
+                    if (session.isConnected()) session.disconnect();
+                }catch(NullPointerException exc) {
+
+                }
+                break;
+            }
+
             if (hasdownloaded) {    
                 File f_delete = new File(Instance_data.getTmpPath() + "\\" + flnm);
 
@@ -274,11 +275,7 @@ public class SCP extends Thread{
             hasdownloaded = false;
         }
 
-        System.out.println("DOWNLOAD FINISHED: " + Instance_hold.getSCPFrom_Monitor().isDlfinish());
-        System.out.println("HASDOWNLOADED: " + hasdownloaded);
-        System.out.println("LENGTH OF CREATED FILE: " +f.length());
-        System.out.println("i: " + i + "  --   OLDLENGTH: " + old_pl_length);
-        System.out.println("i: " + i + "  --   PLSIZE-1: " + (Instance_hold.getPl().getEntries().size()-1));
+        System.out.println("LENGTH OF CREATED FILE: " +f.length() + "\n");
         if (hasdownloaded && f.length()>0) {
             anzgel++;
             hasdownloaded = false;
@@ -290,10 +287,11 @@ public class SCP extends Thread{
 
         if (anzgel == Instance_hold.getPl().getEntries().size()) {
             old_pl_length  = Instance_hold.getPl().getEntries().size();
-            Instance_hold.getSCPFrom_Monitor().setDlfinish(true);
+            Instance_hold.getSCPFrom_Monitor().setDlfinish(true);    
         }
     }while(i<Instance_hold.getPl().getEntries().size());
-
+ 
+    Instance_data.setSkip(true);
     System.out.println("SCPFROM: I AM EXITED");  
   }
 
@@ -327,6 +325,4 @@ public class SCP extends Thread{
     public SCP_OutProgressMonitor getMonitor() {
         return monitor;
     }
-
-
 }

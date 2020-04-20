@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui;
+package soSSH;
 
 import instance.Instance_data;
 import instance.Instance_hold;
@@ -25,7 +25,7 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
 
     @Override
     public void opening(MediaPlayer mp) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        Instance_hold.getMframe().getjProgressBar_play_visual().setIndeterminate(true);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
 
     @Override
     public void stopped(MediaPlayer mp) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        Instance_hold.getMframe().getjProgressBar_play_visual().setIndeterminate(false);
     }
 
     @Override
@@ -61,11 +61,11 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
     @Override
     public void finished(MediaPlayer mp) {
         Instance_hold.getVplay_mon().setFinished(true);
+        Instance_hold.getMframe().getjProgressBar_play_visual().setIndeterminate(false);
     }
 
     @Override
     public void timeChanged(MediaPlayer mp, long l) {
-        //System.out.println("TIME: " + l);
         time = l;
         String timestr = "";
         double timebuf = l;
@@ -77,9 +77,28 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
         sec = (int)((((timebuf / 60) - (int)(timebuf / 60))*100.0)*0.6);
         if (sec<10) timestr = min + ":0" + sec;
         else timestr = min + ":" + sec;
-        Instance_hold.getMframe().getjLabel_time().setText(timestr);
-        Instance_hold.getPlayframe().getjLabel_time().setText(timestr);
-        Instance_hold.getFsnt().getjLabel_time().setText(timestr);
+ 
+        if (timestr.length() == 4) {
+            Instance_hold.getMframe().getjLabel_time().setText("   " + timestr);
+            Instance_hold.getPlayframe().getjLabel_time().setText("   " + timestr);
+            Instance_hold.getFsnt().getjLabel_time().setText("   " + timestr);
+        }
+        else if (timestr.length() == 5) {
+            Instance_hold.getMframe().getjLabel_time().setText("  " + timestr);
+            Instance_hold.getPlayframe().getjLabel_time().setText("  " + timestr);
+            Instance_hold.getFsnt().getjLabel_time().setText("  " + timestr);
+        }
+        else if (timestr.length() == 6) {
+            Instance_hold.getMframe().getjLabel_time().setText(" " + timestr);
+            Instance_hold.getPlayframe().getjLabel_time().setText(" " + timestr);
+            Instance_hold.getFsnt().getjLabel_time().setText(" " + timestr);
+        }
+        else {
+            Instance_hold.getMframe().getjLabel_time().setText(timestr);
+            Instance_hold.getPlayframe().getjLabel_time().setText(timestr);
+            Instance_hold.getFsnt().getjLabel_time().setText(timestr);
+        }
+        
     }
 
     @Override
@@ -124,7 +143,6 @@ public class MPlayer_EventListener implements MediaPlayerEventListener{
 
     @Override
     public void lengthChanged(MediaPlayer mp, long l) {
-        //System.out.println("NEWLENGTH: " + l);
         String timestr = "";
         double time = l;
         int min;

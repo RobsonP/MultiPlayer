@@ -21,7 +21,7 @@ public class FS_Navi_Tab_Scroll_Down extends Thread {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException ex) {
-                Logger.getLogger(FS_Navi_Tab_Scroll_Up.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(FS_Navi_Tab_Scroll_Down.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         Instance_hold.getFsf().toFront();

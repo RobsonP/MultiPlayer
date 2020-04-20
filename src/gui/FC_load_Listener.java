@@ -4,8 +4,7 @@
  */
 package gui;
 
-
-import control.Main_controls;
+import control.MainControls;
 import instance.Instance_data;
 import instance.Instance_hold;
 import java.awt.event.ActionEvent;
@@ -54,11 +53,11 @@ public class FC_load_Listener implements ActionListener{
                 for (int i=0;i<strlist.size();i++) {
                     System.out.println(strlist.get(i));
                     switch (i) {
-                        case 0: Instance_data.setUname(strlist.get(i));break;
-                        case 1: Instance_data.setRsakeyPath(strlist.get(i));break;
-                        case 2: Instance_data.setTmpPath(strlist.get(i));break;
-                        case 3: Instance_hold.getMframe().getjTextField_Server().setText(strlist.get(i));break;
-                        case 4: Instance_hold.getMframe().getjTextField_Port().setText(strlist.get(i));break;
+                        case 0: Instance_data.setUname(strlist.get(i));Instance_hold.getSetframe().getjTextField_uname().setText(strlist.get(i));break;
+                        case 1: Instance_data.setRsakeyPath(strlist.get(i));if(!strlist.get(i).equals("EMPTY"))Instance_hold.getSetframe().getjTextField_RSA().setText(strlist.get(i));break;
+                        case 2: Instance_data.setTmpPath(strlist.get(i));Instance_hold.getSetframe().getjTextField_tmp().setText(strlist.get(i));break;
+                        case 3: Instance_hold.getMframe().getjTextField_Server().setText(strlist.get(i));Instance_hold.getSetframe().getjTextField_server().setText(strlist.get(i));break;
+                        case 4: Instance_hold.getMframe().getjTextField_Port().setText(strlist.get(i));Instance_hold.getSetframe().getjTextField_port().setText(strlist.get(i));break;
                         default:;
                     }
                 }
@@ -72,7 +71,7 @@ public class FC_load_Listener implements ActionListener{
                 System.out.println(n);
 
                 switch (n) {
-                    case 0: Main_controls.del(file);
+                    case 0: MainControls.del(file);
                         
                             crdir = file.mkdirs();
                             if (!crdir) {
@@ -82,6 +81,10 @@ public class FC_load_Listener implements ActionListener{
 
                             this.setdiag.setVisible(false);
                             Instance_hold.getMframe().getjButton_connect().setEnabled(true);
+                            Instance_hold.getMframe().getjTextField_Server().setEnabled(true);
+                            Instance_hold.getMframe().getjTextField_Port().setEnabled(true);
+                            //Instance_hold.getMframe().getjTextPane_info().setEnabled(true);
+                            Instance_hold.getMframe().getjTextPane_info().setEditable(true);
                             JOptionPane.showMessageDialog(null, "Settings loaded");break;
                     case 1: break;
                     default: ;
@@ -93,7 +96,7 @@ public class FC_load_Listener implements ActionListener{
                 //Logger.getLogger(FC_sav_Listener.class.getName()).log(Level.SEVERE, null, ex);
             }
         }else if (e.getActionCommand().equals("CancelSelection")) {
-            System.out.println("Test");
+            System.out.println("CANCEL");
         }  
     }
 

@@ -67,7 +67,6 @@ public class Shell_Monitor {
     public boolean isCancel() {
         return cancel;
     }
-    
 
     public void setCancel(boolean cancel) {
         this.cancel = cancel;

@@ -18,10 +18,14 @@ public class Playlist {
         entries = new ArrayList<>();
     }
     
-    public void addentry(StringBuffer entry) {
+    public void addEntry(StringBuffer entry) {
         entries.add(entry.toString());
     }
 
+    public void removeEntry(int i) {
+        entries.remove(i);
+    }
+    
     public ArrayList<String> getEntries() {
         return entries;
     }   

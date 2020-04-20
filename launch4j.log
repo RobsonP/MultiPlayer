@@ -1,0 +1,152 @@
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Match:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_241
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_241
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Runtime used:	1.008.000 (64-bit)
+Launcher:	C:\Program Files\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-jar "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe"
+Args length:	64/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+64-bit search:	SOFTWARE\JavaSoft\Java Runtime Environment...
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8
+Check launcher:	C:\Program Files\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Match:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Runtime Environment\1.8.0_241
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\Java Development Kit...
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8
+Ignore:		1.008.000
+Check:		SOFTWARE\JavaSoft\Java Development Kit\1.8.0_241
+Ignore:		1.008.000_241
+64-bit search:	SOFTWARE\JavaSoft\JRE...
+64-bit search:	SOFTWARE\JavaSoft\JDK...
+Runtime used:	1.008.000 (64-bit)
+Launcher:	C:\Program Files\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-jar "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe"
+Args length:	64/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+Bundled JRE:	C:\Program Files (x86)\Java\jre1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Main class:	soSSH.SoSSH
+Add classpath:	lib\jna-3.3.0-platform.jar
+Add classpath:	lib\jna-3.3.0.jar
+Add classpath:	lib\jsch-0.1.54.jar
+Add classpath:	lib\vlcj-1.2.1-b2.jar
+Add classpath:	lib\${libs.beans-binding.classpath}
+Launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe;lib\jna-3.3.0-platform.jar;lib\jna-3.3.0.jar;lib\jsch-0.1.54.jar;lib\vlcj-1.2.1-b2.jar;lib\${libs.beans-binding.classpath}" soSSH.SoSSH
+Args length:	205/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+Bundled JRE:	C:\Program Files (x86)\Java\jre1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Main class:	soSSH.SoSSH
+Add classpath:	lib\jna-3.3.0-platform.jar
+Add classpath:	lib\jna-3.3.0.jar
+Add classpath:	lib\jsch-0.1.54.jar
+Add classpath:	lib\vlcj-1.2.1-b2.jar
+Add classpath:	lib\${libs.beans-binding.classpath}
+Launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe;lib\jna-3.3.0-platform.jar;lib\jna-3.3.0.jar;lib\jsch-0.1.54.jar;lib\vlcj-1.2.1-b2.jar;lib\${libs.beans-binding.classpath}" soSSH.SoSSH
+Args length:	205/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+Bundled JRE:	C:\Program Files (x86)\Java\jre1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Main class:	soSSH.SoSSH
+Add classpath:	lib\jna-3.3.0-platform.jar
+Add classpath:	lib\jna-3.3.0.jar
+Add classpath:	lib\jsch-0.1.54.jar
+Add classpath:	lib\vlcj-1.2.1-b2.jar
+Add classpath:	lib\${libs.beans-binding.classpath}
+Launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe;lib\jna-3.3.0-platform.jar;lib\jna-3.3.0.jar;lib\jsch-0.1.54.jar;lib\vlcj-1.2.1-b2.jar;lib\${libs.beans-binding.classpath}" soSSH.SoSSH
+Args length:	205/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+Bundled JRE:	C:\Program Files (x86)\Java\jre1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Main class:	soSSH.SoSSH
+Add classpath:	lib\jna-3.3.0-platform.jar
+Add classpath:	lib\jna-3.3.0.jar
+Add classpath:	lib\jsch-0.1.54.jar
+Add classpath:	lib\vlcj-1.2.1-b2.jar
+Add classpath:	lib\${libs.beans-binding.classpath}
+Launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe;lib\jna-3.3.0-platform.jar;lib\jna-3.3.0.jar;lib\jsch-0.1.54.jar;lib\vlcj-1.2.1-b2.jar;lib\${libs.beans-binding.classpath}" soSSH.SoSSH
+Args length:	205/32768 chars
+Exit code:	0
+
+
+Version:	3.12
+CmdLine:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe --l4j-debug
+WOW64:		yes
+Working dir:	C:\Users\mautz\Documents\NetBeansProjects\SoSSH\.
+Java min ver:	1.007.000
+Java max ver:	1.008.000
+Bundled JRE:	C:\Program Files (x86)\Java\jre1.8.0_241
+Check launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe (OK)
+Main class:	soSSH.SoSSH
+Add classpath:	lib\jna-3.3.0-platform.jar
+Add classpath:	lib\jna-3.3.0.jar
+Add classpath:	lib\jsch-0.1.54.jar
+Add classpath:	lib\vlcj-1.2.1-b2.jar
+Add classpath:	lib\${libs.beans-binding.classpath}
+Launcher:	C:\Program Files (x86)\Java\jre1.8.0_241\bin\javaw.exe
+Launcher args:	-classpath "C:\Users\mautz\Documents\NetBeansProjects\SoSSH\SoSSH.exe;lib\jna-3.3.0-platform.jar;lib\jna-3.3.0.jar;lib\jsch-0.1.54.jar;lib\vlcj-1.2.1-b2.jar;lib\${libs.beans-binding.classpath}" soSSH.SoSSH
+Args length:	205/32768 chars
+Exit code:	0
