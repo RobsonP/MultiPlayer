@@ -10,7 +10,7 @@ package monitor;
  */
 public class Play_Monitor {
     private int irruptflag;
-    private boolean /*stopped,*/ exit, finished, interrupted_play;
+    private boolean exit, finished, interrupted_play;
             
     public Play_Monitor() {
         exit = false;

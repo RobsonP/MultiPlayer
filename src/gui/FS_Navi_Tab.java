@@ -24,6 +24,9 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 /**
@@ -31,17 +34,29 @@ import javax.swing.plaf.basic.BasicSliderUI;
  * @author RobsonP
  */
 public class FS_Navi_Tab extends JDialog {
-    private int sl_value = 0;
     private int vo_value = 0;
-    private boolean stop = false, dragged = false, playcontrol = true;
+    private boolean stop = false, playcontrol = true;
     
     public FS_Navi_Tab() {
+        try {    
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         initComponents();
         this.setOpacity(0.7f);        
         
         Color c = new Color(70,70,70);
         Container con = this.getContentPane();
         con.setBackground( c);
+        
+        try { 
+            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
 

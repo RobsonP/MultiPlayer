@@ -40,8 +40,6 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSliderUI;
 import javax.swing.tree.DefaultTreeModel;
 
-
-
 /**
  *
  * @author RobsonP
@@ -83,14 +81,14 @@ public class MainFrame extends javax.swing.JFrame {
         JRootPane rootPane = this.getRootPane();
         rootPane.setDefaultButton(this.jButton_connect);
         
-        this.setIconImage(Instance_hold.getIm_hold().getLogo_small());
+        this.setIconImage(Instance_hold.getIm_hold().getLogo_big());
         this.jLabel_dir_info.setText("");
         this.jLabel_show_flnm.setText("");
         this.jLabel_show_status.setText("");
         this.jLabel_show_info.setText("");
 
         top = new DefaultMutableTreeNode("/");
-        this.setTitle("SoSSH");
+        this.setTitle("MultiPlayer");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(wlistener);
         this.addComponentListener(clistener);
@@ -1097,7 +1095,7 @@ public class MainFrame extends javax.swing.JFrame {
 
     private void jMenuItem_aboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_aboutActionPerformed
         Instance_hold.getPlayframe().toBack();
-        JOptionPane.showMessageDialog(this, "SoSSH\nVersion 2.4\nLicence: Freeware\n\nDesigned by Robert Mautz");
+        JOptionPane.showMessageDialog(this, "MultiPlayer\nVersion 2.6\nLicence: Freeware\n\nDesigned by Robert Mautz");
         Instance_hold.getPlayframe().toFront();
         Instance_hold.getPlayframe().setAlwaysOnTop(true);
     }//GEN-LAST:event_jMenuItem_aboutActionPerformed

@@ -125,7 +125,7 @@ public class ParseControl {
                     }
 
                     if (filenm.endsWith(" [")) filenm = filenm.substring(0, filenm.length()-3);
-
+                    
                     filenm = filenm.replace("'", "\\'");
                     filenm = filenm.replace("(", "\\(");
                     filenm = filenm.replace(")", "\\)");
@@ -141,8 +141,8 @@ public class ParseControl {
                     filenm = filenm.replace("" + ch, "\\"+ch);
 
                     ne.setName(filenm);
-
-                    if (strlist[i].charAt(strlist[i].length()-2) == '/' || strlist[i].startsWith("d") || strlist[i].startsWith("l")) {    
+                    
+                    if (strlist[i].charAt(strlist[i].length()-2) == '/' || strlist[i].startsWith("d")) {// || strlist[i].startsWith("l")) {    
                         ne.setType('d');   
                     } else {
 

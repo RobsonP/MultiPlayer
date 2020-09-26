@@ -3,7 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package soSSH;
+package multiPlayer;
 
 import cmd.SCP;
 import gui.Show_State;
@@ -72,18 +72,18 @@ public class Play extends Thread {
                 Instance_hold.getPlayframe().setResizable(false);
                 if (!Instance_hold.getPlayframe().isVisible() && !Instance_hold.getMframe().getjPanel_nav().isVisible()) {
                     Instance_hold.getPlayframe().setVisible(true);
-                    Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+178, (int)Instance_hold.getMframe().getLocation().getY()+75);
+                    Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+170, (int)Instance_hold.getMframe().getLocation().getY()+70);
                 }
                 Instance_hold.getPlayframe().getjPanel_View().setVisible(false);
-                Instance_hold.getPlayframe().setMinimumSize(new Dimension(482, 130));
-                Instance_hold.getPlayframe().setSize(482, 130);
+                Instance_hold.getPlayframe().setMinimumSize(new Dimension(510, 130));
+                Instance_hold.getPlayframe().setSize(510, 130);
                 System.out.println("SIZE CHANGED FROM PLAYFRAME");
                 Instance_hold.getPlayframe().getjButton_fullscreen().setEnabled(false);
                 Instance_hold.getMframe().getClistener().setVplay(false);
             }else if (!Instance_hold.getPlayframe().isVisible() && !Instance_hold.getMframe().getjPanel_nav().isVisible()) {
                 Instance_hold.getPlayframe().setResizable(true);
                 Instance_hold.getPlayframe().setVisible(true);
-                Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+178, (int)Instance_hold.getMframe().getLocation().getY()+75);
+                Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+170, (int)Instance_hold.getMframe().getLocation().getY()+70);
                 Instance_hold.getPlayframe().getjPanel_View().setVisible(true);
                 Instance_hold.getPlayframe().setMinimumSize(new Dimension(520, 150));
                 Instance_hold.getPlayframe().setSize(800, 600);
@@ -94,7 +94,7 @@ public class Play extends Thread {
                 if (!Instance_hold.getPlayframe().isIconfied()) {
                     if (!Instance_hold.getPlayframe().isVisible() && !Instance_hold.getMframe().getjPanel_nav().isVisible()) {
                         Instance_hold.getPlayframe().setVisible(true);
-                        Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+178, (int)Instance_hold.getMframe().getLocation().getY()+75);
+                        Instance_hold.getPlayframe().setLocation((int)Instance_hold.getMframe().getLocation().getX()+170, (int)Instance_hold.getMframe().getLocation().getY()+70);
                     }
                     Instance_hold.getPlayframe().getjPanel_View().setVisible(true);
                     Instance_hold.getPlayframe().setMinimumSize(new Dimension(520, 150));

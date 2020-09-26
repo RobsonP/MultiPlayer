@@ -8,6 +8,7 @@ import control.Comparator;
 import control.MainControls;
 import data.Node_entry;
 import gui.MessageThread;
+import gui.MyKeyListener;
 import instance.Instance_data;
 import instance.Instance_hold;
 import java.util.ArrayList;
@@ -88,7 +89,8 @@ public class ConnectThread extends Thread {
                     MainControls.expand_NavTree(evt);
                 }
             });
-
+            Instance_hold.getMframe().getjTree_nav().addKeyListener(new MyKeyListener());
+            
             Instance_hold.getMframe().getjScrollPane_nav().setViewportView(Instance_hold.getMframe().getjTree_nav());
             Instance_hold.getMframe().getjButton_connect().setEnabled(false);
             Instance_hold.getMframe().getjTextField_Server().setEnabled(false);

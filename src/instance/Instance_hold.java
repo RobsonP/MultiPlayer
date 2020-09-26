@@ -14,7 +14,7 @@ import data.Playlist;
 import monitor.SCPFrom_Monitor;
 import monitor.Shell_Monitor;
 import gui.*;
-import soSSH.Play;
+import multiPlayer.Play;
 
 /**
  * contains all instances of all classes with non-static variables

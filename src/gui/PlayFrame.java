@@ -10,7 +10,7 @@
  */
 package gui;
 
-import soSSH.MPlayer_EventListener;
+import multiPlayer.MPlayer_EventListener;
 import control.MainControls;
 import instance.Instance_data;
 import instance.Instance_hold;
@@ -50,7 +50,7 @@ public class PlayFrame extends javax.swing.JFrame {
       
         this.jLabel_show_flnm.setText("");
         this.setTitle("Play");
-        this.setIconImage(Instance_hold.getIm_hold().getLogo_small());
+        this.setIconImage(Instance_hold.getIm_hold().getLogo_big());
         this.addComponentListener(new My_PL_ComponentListener());
         
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -314,14 +314,14 @@ public class PlayFrame extends javax.swing.JFrame {
     private void jButton_fullscreenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_fullscreenActionPerformed
         System.out.println(Instance_data.getPlaypath());
         File file = new File(Instance_data.getPlaypath());
-        
+   
         Instance_hold.getMframe().getClistener().setFullscreen(true);
         Instance_hold.getFsf().setSize(this.getGraphicsConfiguration().getBounds().getSize());
-        Instance_hold.getFsnt().setSize((int)this.getGraphicsConfiguration().getBounds().getWidth(),75);
+        Instance_hold.getFsnt().setSize((int)this.getGraphicsConfiguration().getBounds().getWidth(),80);
         
         if (this.getX() < java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth()) {
             Instance_hold.getFsf().setLocation(0,0);
-            Instance_hold.getFsnt().setLocation(0, (int)(this.getGraphicsConfiguration().getBounds().getHeight()-75));
+            Instance_hold.getFsnt().setLocation(0, (int)(this.getGraphicsConfiguration().getBounds().getHeight()-80));
         }else {
             Instance_hold.getFsf().setLocation((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth(),0);
             Instance_hold.getFsnt().setLocation((int)java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth(), (int)(this.getGraphicsConfiguration().getBounds().getHeight()-75));
@@ -329,8 +329,8 @@ public class PlayFrame extends javax.swing.JFrame {
         
         System.out.println("X LOC: " + Instance_hold.getFsf().getLocation().getX());
         System.out.println("Y LOC: " + Instance_hold.getFsf().getLocation().getY());
-        System.out.println("SCREENSIZE X: " + this.getGraphicsConfiguration().getBounds().getHeight());
-        System.out.println("SCREENSIZE Y: " + this.getGraphicsConfiguration().getBounds().getWidth());
+        System.out.println("SCREENSIZE X: " + this.getGraphicsConfiguration().getBounds().getWidth());
+        System.out.println("SCREENSIZE Y: " + this.getGraphicsConfiguration().getBounds().getHeight());
                 
         int vol;
         
@@ -834,15 +834,10 @@ public class PlayFrame extends javax.swing.JFrame {
     public JLabel getjLabel_show_flnm() {
         return jLabel_show_flnm;
     }
-
     
     public void setjLabel_show_flnm(JLabel jLabel_show_flnm) {
         this.jLabel_show_flnm = jLabel_show_flnm;
     }
-
-    /**
-     * @param args the command line arguments
-     */
 
     public JToggleButton getjToggleButton_lock() {
         return jToggleButton_lock;

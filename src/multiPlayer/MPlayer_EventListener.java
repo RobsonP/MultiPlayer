@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package soSSH;
+package multiPlayer;
 
 import instance.Instance_data;
 import instance.Instance_hold;

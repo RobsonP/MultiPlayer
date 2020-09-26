@@ -10,9 +10,14 @@
  */
 package gui;
 
-import soSSH.MPlayer_EventListener;
+import multiPlayer.MPlayer_EventListener;
 import instance.Instance_hold;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import uk.co.caprica.vlcj.component.EmbeddedMediaPlayerComponent;
 import uk.co.caprica.vlcj.runtime.windows.WindowsMouseHook;
 
@@ -29,9 +34,16 @@ public class FullScreenFrame extends javax.swing.JFrame {
     private WindowsMouseHook wmh;
     /** Creates new form FullScreenFrame */
     public FullScreenFrame() {
+        try {    
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            SwingUtilities.updateComponentTreeUI(this);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         initComponents();       
         
-        this.setIconImage(Instance_hold.getIm_hold().getLogo_small());
+        this.setIconImage(Instance_hold.getIm_hold().getLogo_big());
         
         this.addKeyListener(mkl);
                 
@@ -45,6 +57,12 @@ public class FullScreenFrame extends javax.swing.JFrame {
          
         this.jPanel_View.add(empc);
         this.setVisible(false);
+        
+        try { 
+            UIManager.setLookAndFeel("com.jtattoo.plaf.mint.MintLookAndFeel");
+        } catch (IllegalAccessException | ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(FS_Navi_Tab.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void cpymedpl(EmbeddedMediaPlayerComponent empc) {

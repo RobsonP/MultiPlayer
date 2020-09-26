@@ -3,45 +3,51 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package soSSH;
+package multiPlayer;
 
+import com.jtattoo.plaf.mint.MintLookAndFeel;
 import instance.Instance_hold;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.Locale;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
  * @author RobsonP
  */
-public class SoSSH {
+public class MultiPlayer {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.NoSuchFieldException
+     * @throws java.lang.IllegalAccessException
      */
     public static void main(String[] args) throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         JFrame startupFrame = showStartupWindow();
         
-        try {
-            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-
+        try {    
+            Properties p = new Properties();
+            p.put("logoString", "MP");
+            MintLookAndFeel.setCurrentTheme(p);
+            
+            MintLookAndFeel mlaf = new MintLookAndFeel();
+            
+            UIManager.setLookAndFeel(mlaf);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(MultiPlayer.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         
         File pfad = new File("");
         System.out.println(pfad.getAbsolutePath());
@@ -54,16 +60,14 @@ public class SoSSH {
         Locale.setDefault(Locale.US);
         JComponent.setDefaultLocale(Locale.US);
 
+        Instance_hold.getMframe().setSize(800, 650);
         Instance_hold.getMframe().setVisible(true);
         startupFrame.setVisible(false);
     }
     
     public static JFrame showStartupWindow() {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        
         JFrame frame = new JFrame("Display Image");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setAlwaysOnTop(true);
         frame.toFront();
         
         File pfad = new File("");

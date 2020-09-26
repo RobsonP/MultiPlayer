@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
  * @author RobsonP
  */
 public class Image_hold {
+    public Image logo_big = new ImageIcon(getClass().getResource("/gui/design/logo_big.jpg")).getImage();
     public Image logo_small = new ImageIcon(getClass().getResource("/gui/design/logo_small.jpg")).getImage();
     public ImageIcon mcb_blue_prev_small = new ImageIcon(getClass().getResource("/gui/design/mcb_blue_prev_small.png"));
     public ImageIcon mcb_blue_play_small = new ImageIcon(getClass().getResource("/gui/design/mcb_blue_play_small.png"));
@@ -29,8 +30,8 @@ public class Image_hold {
     public ImageIcon mcb_green_stop_small = new ImageIcon(getClass().getResource("/gui/design/mcb_green_stop_small.png"));
     public ImageIcon mcb_green_fwd_small = new ImageIcon(getClass().getResource("/gui/design/mcb_green_fwd_small.png"));
 
-    public Image getLogo_small() {
-        return logo_small;
+    public Image getLogo_big() {
+        return logo_big;
     }
 
     public ImageIcon getMcb_blue_prev_small() {
